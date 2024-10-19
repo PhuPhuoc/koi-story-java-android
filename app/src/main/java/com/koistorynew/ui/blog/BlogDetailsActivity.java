@@ -2,6 +2,7 @@ package com.koistorynew.ui.blog;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,14 @@ public class BlogDetailsActivity extends AppCompatActivity {
         authorTextView.setText(author);
         contentTextView.setText(content);
         Picasso.get().load(imageUrl).into(imageView);
+
+        // Set up the "View Comments" button
+        Button viewCommentsButton = findViewById(R.id.btn_view_comments);
+        viewCommentsButton.setOnClickListener(v -> {
+            Intent commentIntent = new Intent(BlogDetailsActivity.this, CommentActivity.class);
+            commentIntent.putExtra("BLOG_TITLE", title);
+            startActivity(commentIntent);
+        });
     }
 
     @Override

@@ -29,6 +29,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <EditText
+        android:id="@+id/confirmPasswordRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/passwordRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/userNameRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="text"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/confirmPasswordRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/registerConfirmButton"
         android:layout_width="0dp"
@@ -37,6 +61,6 @@
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordRegister" />
+        app:layout_constraintTop_toBottomOf="@id/userNameRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

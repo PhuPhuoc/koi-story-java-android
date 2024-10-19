@@ -28,6 +28,9 @@
         <activity android:name=".MainActivity" android:theme="@style/Theme.Koistorynew.NoActionBar"/>
         <activity android:name=".ui.blog.BlogDetailsActivity" />
         <activity android:name=".ui.blog.BlogCommentActivity" />
+        <activity android:name=".ui.market.MarketDetailsActivity" />
+        <activity android:name=".ui.market.MarketCommentActivity" />
+
 
 
     </application>

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         // định nghĩa fragment như là top-level destination
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_blog, R.id.nav_market)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_blog, R.id.nav_market,R.id.nav_consult)
                 .setOpenableLayout(drawer)
                 .build();
         // đối tượng nav controller giúp điều hướng

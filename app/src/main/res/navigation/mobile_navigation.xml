@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_market" />
 
     <fragment
+        android:id="@+id/nav_consult"
+        android:name="com.koistorynew.ui.consult.ConsultFragment"
+        android:label="@string/menu_consult"
+        tools:layout="@layout/fragment_consult" />
+
+    <fragment
         android:id="@+id/nav_home"
         android:name="com.koistorynew.ui.home.HomeFragment"
         android:label="@string/menu_home"

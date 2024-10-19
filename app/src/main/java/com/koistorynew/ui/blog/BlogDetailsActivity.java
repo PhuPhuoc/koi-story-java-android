@@ -43,7 +43,7 @@ public class BlogDetailsActivity extends AppCompatActivity {
         // Set up the "View Comments" button
         Button viewCommentsButton = findViewById(R.id.btn_view_comments);
         viewCommentsButton.setOnClickListener(v -> {
-            Intent commentIntent = new Intent(BlogDetailsActivity.this, CommentActivity.class);
+            Intent commentIntent = new Intent(BlogDetailsActivity.this, BlogCommentActivity.class);
             commentIntent.putExtra("BLOG_TITLE", title);
             startActivity(commentIntent);
         });

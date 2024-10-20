@@ -3,7 +3,6 @@ package com.koistorynew.ui.market;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -11,11 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Response;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.koistorynew.ApiService;
@@ -37,101 +33,157 @@ public class MarketCommentActivity extends AppCompatActivity {
     private CommentAdapter commentAdapter;
     private List<PostMarketComment> commentList;
     private RequestQueue requestQueue;
+    private TextView commentEditText;
+    private String productId;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_market_comment);
 
-        // Set up back button in ActionBar
+        initializeViews();
+        setupActionBar();
+        setupRecyclerView();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
+        commentEditText = findViewById(R.id.commentEditText);
+        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
+        commentRecyclerView = findViewById(R.id.commentRecyclerView);
+
+        // Initialize other variables
+        Intent intent = getIntent();
+        productId = intent.getStringExtra("POST_ID");
+        requestQueue = Volley.newRequestQueue(this);
+        userID = UserSessionManager.getInstance().getFbUid();
+        commentList = new ArrayList<>();
+    }
+
+    private void setupActionBar() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Comments");
         }
-        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
-        TextView commentEditText = findViewById(R.id.commentEditText);
-        Intent intent = getIntent();
-        String productId = intent.getStringExtra("PRODUCT_ID");
-        requestQueue = Volley.newRequestQueue(this);
-        String userID = UserSessionManager.getInstance().getFbUid();
+    }
 
-        // Dummy data with avatar URLs
-        commentList = new ArrayList<>();
-
-        fetchComments(productId);
-        commentRecyclerView = findViewById(R.id.commentRecyclerView);
+    private void setupRecyclerView() {
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commentAdapter = new CommentAdapter(commentList);
         commentRecyclerView.setAdapter(commentAdapter);
-
-        sendCommentButton.setOnClickListener(view -> {
-            String newCommentText = commentEditText.getText().toString().trim();
-            String userId = userID;
-
-            if (!newCommentText.isEmpty()) {
-//                postComment(productId, userId, newCommentText);
-
-                commentEditText.setText("");
-            }
-        });
-
+        fetchComments(productId);
     }
 
+    private void setupClickListeners() {
+        ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
+        sendCommentButton.setOnClickListener(view -> {
+            String newCommentText = commentEditText.getText().toString().trim();
+            Log.d("newCommentText", "newCommentText: " + newCommentText);
+            if (!newCommentText.isEmpty()) {
+                postComment(productId, userID, newCommentText);
+                commentEditText.setText("");
+            }
+            fetchComments(productId);
+        });
 
-    private void fetchComments(String postId) {
-        String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray dataArray = response.getJSONArray("data");
-
-                            for (int i = 0; i < dataArray.length(); i++) {
-                                JSONObject commentObject = dataArray.getJSONObject(i);
-                                String author = commentObject.getString("username");
-                                String comment = commentObject.getString("content");
-                                String avatarUrl = commentObject.getString("user_avatar_url");
-
-                                // Log thông tin bình luận
-                                Log.d("API_RESPONSE", "Author: " + author + ", Comment: " + comment + ", Avatar URL: " + avatarUrl);
-
-                                // Add comment to the list
-                                PostMarketComment postMarketComment = new PostMarketComment(author, comment, avatarUrl);
-                                commentList.add(postMarketComment);
-                            }
-
-                            // Notify the adapter that data has changed
-                            commentAdapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e("API_RESPONSE_ERROR", "Error parsing JSON: " + e.getMessage());
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Log any error
-                        Log.e("API_RESPONSE_ERROR", "Error fetching data: " + error.getMessage());
-                        error.printStackTrace();
-                    }
-                }
-        );
-
-        // Add the request to the RequestQueue
-        requestQueue.add(jsonObjectRequest);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private void fetchComments(String postId) {
+        commentList.clear();
+        String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    try {
+                        JSONArray dataArray = response.getJSONArray("data");
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject commentObject = dataArray.getJSONObject(i);
+                            String author = commentObject.getString("username");
+                            String comment = commentObject.getString("content");
+                            String avatarUrl = commentObject.getString("user_avatar_url");
+
+                            PostMarketComment postMarketComment = new PostMarketComment(author, comment, avatarUrl);
+                            commentList.add(postMarketComment);
+                        }
+                        commentAdapter.notifyDataSetChanged();
+                        commentRecyclerView.scrollToPosition(commentList.size() - 1);
+                    } catch (JSONException e) {
+                        Log.e("API_RESPONSE_ERROR", "Error parsing JSON: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    Log.e("API_RESPONSE_ERROR", "Error fetching data: " + error.getMessage());
+                    error.printStackTrace();
+
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void postComment(String productId, String userID, String content) {
+        String url = "http://api.koistory.site/api/v1/post/" + productId + "/comment";
+        JSONObject commentData = new JSONObject();
+        try {
+            commentData.put("content", content);
+            commentData.put("user_id", userID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                commentData,
+                response -> {
+                    Log.d("API_RESPONSE", "Comment posted successfully: " + response.toString());
+                    // Fetch comments again after successful posting
+                    fetchComments(productId);
+                },
+                error -> {
+                    // Handle 307 redirect
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 307) {
+                        String redirectUrl = error.networkResponse.headers.get("Location");
+                        if (redirectUrl != null) {
+                            // Check if redirectUrl is relative, if so prepend the base URL
+                            if (!redirectUrl.startsWith("http")) {
+                                redirectUrl = "http://api.koistory.site" + redirectUrl;
+                            }
+                            Log.d("REDIRECT", "Redirecting to: " + redirectUrl);
+                            // Re-issue the request to the new location
+                            JsonObjectRequest redirectRequest = new JsonObjectRequest(
+                                    Request.Method.POST,
+                                    redirectUrl,
+                                    commentData,
+                                    redirectResponse -> {
+                                        Log.d("API_RESPONSE", "Comment posted successfully after redirect: " + redirectResponse.toString());
+                                        // Fetch comments again
+                                        fetchComments(productId);
+                                    },
+                                    redirectError -> {
+                                        Log.e("API_RESPONSE_ERROR", "Error posting comment after redirect: " + redirectError.getMessage());
+                                        redirectError.printStackTrace();
+                                    }
+                            );
+                            requestQueue.add(redirectRequest);
+                        }
+                    } else {
+                        Log.e("API_RESPONSE_ERROR", "Error posting comment: " + error.getMessage());
+                        error.printStackTrace();
+                    }
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
     }
 }

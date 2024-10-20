@@ -1,4 +1,4 @@
-package com.koistorynew.ui.mymarket;
+package com.koistorynew.ui.myconsult;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -29,71 +29,54 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.koistorynew.ApiService;
 import com.koistorynew.R;
 import com.koistorynew.UserSessionManager;
-import com.koistorynew.ui.market.MarketDetailsActivity;
-import com.koistorynew.ui.market.MarketViewModel;
-import com.koistorynew.ui.mymarket.model.PostMarketRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.koistorynew.ui.myconsult.model.AddConsult;
+import com.koistorynew.ui.mymarket.AddMarketActivity;
+import com.koistorynew.ui.mymarket.MyMarketViewModel;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AddMarketActivity extends AppCompatActivity {
-
-    private EditText editTextName, editTextPostType, editTextColor, editTextOld, editTextAddress,
-            editTextSize, editTextTitle, editTextProductType, editTextType, editTextPhone,
-            editTextPrice, editTextDescription;
+public class AddConsultActivity extends AppCompatActivity {
+    private EditText editTextName, editTextDescription;
     private Button uploadImageButton, submitButton;
     private LinearLayout imageContainer; // Container for selected images
     private List<Uri> selectedImages;  // List of selected images
-    private MyMarketViewModel myMarketViewModel;
+    private MyConsultViewModel myConsultViewModel;
     private ApiService apiService;
     private RequestQueue requestQueue;
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_post_market);
+        setContentView(R.layout.activity_add_consult);
         String id = UserSessionManager.getInstance().getFbUid();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Add market post");
+        getSupportActionBar().setTitle("Add Consult");
         requestQueue = Volley.newRequestQueue(this);
         apiService = new ApiService(requestQueue);
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
 
-        myMarketViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+        myConsultViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new MyMarketViewModel(AddMarketActivity.this);
+                return (T) new MyConsultViewModel(AddConsultActivity.this);
             }
-        }).get(MyMarketViewModel.class);
+        }).get(MyConsultViewModel.class);
 
-        editTextColor = findViewById(R.id.edit_text_color);
         editTextDescription = findViewById(R.id.edit_text_description);
         selectedImages = new ArrayList<>();
-        editTextOld = findViewById(R.id.edit_text_old);
-        editTextPhone = findViewById(R.id.edit_text_phone);
-        editTextPostType = findViewById(R.id.edit_text_post_type);
-        editTextPrice = findViewById(R.id.edit_text_price);
         editTextName = findViewById(R.id.edit_text_name);
-        editTextProductType = findViewById(R.id.edit_text_product_type);
-        editTextAddress = findViewById(R.id.edit_text_address);
-        editTextSize = findViewById(R.id.edit_text_size);
-        editTextTitle = findViewById(R.id.edit_text_title);
-        editTextType = findViewById(R.id.edit_text_type);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);
         imageContainer = findViewById(R.id.image_container);
@@ -116,7 +99,7 @@ public class AddMarketActivity extends AppCompatActivity {
                             selectedImages.add(imageUri);  // Add single image
                             addImageToContainer(imageUri); // Display the image
                         }
-                        Toast.makeText(AddMarketActivity.this, "Selected " + selectedImages.size() + " images", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddConsultActivity.this, "Selected " + selectedImages.size() + " images", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -131,47 +114,26 @@ public class AddMarketActivity extends AppCompatActivity {
 
         submitButton.setOnClickListener(v -> {
             String name = editTextName.getText().toString().trim();
-            String postType = editTextPostType.getText().toString().trim();
-            String color = editTextColor.getText().toString().trim();
-            String old = editTextOld.getText().toString().trim();
-            String address = editTextAddress.getText().toString().trim();
-            String size = editTextSize.getText().toString().trim();
-            String title = editTextTitle.getText().toString().trim();
-            String productType = editTextProductType.getText().toString().trim();
-            String type = editTextType.getText().toString().trim();
-            String phone = editTextPhone.getText().toString().trim();
-            String priceStr = editTextPrice.getText().toString().trim();
             String description = editTextDescription.getText().toString().trim();
 
-            if (name.isEmpty() || priceStr.isEmpty() || description.isEmpty() || selectedImages.isEmpty()) {
-                Toast.makeText(AddMarketActivity.this, "Please fill in all required fields and upload images", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty() || description.isEmpty() || selectedImages.isEmpty()) {
+                Toast.makeText(AddConsultActivity.this, "Please fill in all required fields and upload images", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int price;
-            try {
-                price = Integer.parseInt(priceStr);
-            } catch (NumberFormatException e) {
-                Toast.makeText(AddMarketActivity.this, "Please enter a valid price", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            uploadImagesAndSubmit(name, postType, color, old, address, size, title, productType, type, phone, price, description, id);
+            uploadImagesAndSubmit(name, description, id);
 
             // Handle submit information here
-            Toast.makeText(AddMarketActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddConsultActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
         });
     }
 
 
-    private void uploadImagesAndSubmit(String name, String postType, String color, String old,
-                                       String address, String size, String title, String productType, String type,
-                                       String phone, int price, String description, String userId) {
+    private void uploadImagesAndSubmit(String name, String description, String userId) {
 
         List<String> imageUrls = new ArrayList<>();
         AtomicInteger uploadedCount = new AtomicInteger(0);
 
-        // Hiển thị loading dialog
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading images...");
         progressDialog.setCancelable(false);
@@ -194,52 +156,38 @@ public class AddMarketActivity extends AppCompatActivity {
                             // Kiểm tra nếu đã upload xong tất cả ảnh
                             if (uploadedCount.incrementAndGet() == selectedImages.size()) {
                                 progressDialog.dismiss();
-                                submitDataToApi(name, postType, color, old, address, size,
-                                        title, productType, type, phone, price, description,
+                                submitDataToApi(name, description,
                                         userId, imageUrls);
                             }
                         });
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(AddMarketActivity.this,
+                        Toast.makeText(AddConsultActivity.this,
                                 "Failed to upload image: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     })
                     .addOnProgressListener(snapshot -> {
                         double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        progressDialog.setMessage("Uploading: " + (int)progress + "%");
+                        progressDialog.setMessage("Uploading: " + (int) progress + "%");
                     });
         }
     }
 
 
-    private void submitDataToApi(String name, String postType, String color, String old,
-                                 String address, String size, String title, String productType,
-                                 String type, String phone, int price, String description,
+    private void submitDataToApi(String name, String description,
                                  String userId, List<String> imageUrls) {
 
-        PostMarketRequest request = new PostMarketRequest();
+        AddConsult request = new AddConsult();
         request.setProductName(name);
-        request.setPrice(price);
         request.setDescription(description);
-        request.setPostType(postType.isEmpty() ? "" : postType);
-        request.setColor(color.isEmpty() ? "" : color);
-        request.setOld(old.isEmpty() ? "" : old);
-        request.setSellerAddress(address.isEmpty() ? "" : address);
-        request.setSize(size.isEmpty() ? "" : size);
-        request.setTitle(title.isEmpty() ? "" : title);
-        request.setProductType(productType.isEmpty() ? "" : productType);
-        request.setType(type.isEmpty() ? "" : type);
-        request.setPhoneNumber(phone.isEmpty() ? "" : phone);
-        request.setUserId(userId);
         request.setListImage(imageUrls);
 
-        apiService.createMarketPost(request, new ApiService.DataCallback<String>() {
+        apiService.createConsult(request, new ApiService.DataCallback<String>() {
             @Override
             public void onSuccess(String response) {
                 runOnUiThread(() -> {
-                    Toast.makeText(AddMarketActivity.this,
+                    Toast.makeText(AddConsultActivity.this,
                             "Product submitted successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 });
@@ -248,12 +196,13 @@ public class AddMarketActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 runOnUiThread(() -> {
-                    Toast.makeText(AddMarketActivity.this,
+                    Toast.makeText(AddConsultActivity.this,
                             "Failed to submit product", Toast.LENGTH_SHORT).show();
                 });
             }
         });
     }
+
 
     private void addImageToContainer(Uri imageUri) {
         // FrameLayout để chứa cả ảnh và nút "X"
@@ -287,7 +236,7 @@ public class AddMarketActivity extends AppCompatActivity {
                 // Xóa ảnh khỏi container và danh sách URI
                 imageContainer.removeView(frameLayout);
                 selectedImages.remove(imageUri);
-                Toast.makeText(AddMarketActivity.this, "Image removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddConsultActivity.this, "Image removed", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -299,7 +248,6 @@ public class AddMarketActivity extends AppCompatActivity {
         imageContainer.addView(frameLayout);
     }
 
-    // Method to decode and sample bitmap from URI
     private Bitmap decodeSampledBitmapFromUri(Uri uri, int reqWidth, int reqHeight) {
         try {
             // First, get the dimensions of the image

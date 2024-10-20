@@ -37,6 +37,9 @@
         <activity android:name=".ui.mymarket.EditMarketActivity" />
         <activity android:name=".ui.mymarket.EditImagesActivity" />
         <activity android:name=".ui.consult.ConsultCommentActivity" />
+        <activity android:name=".ui.myconsult.MyConsultCommentActivity" />
+        <activity android:name=".ui.myconsult.AddConsultActivity" />
+
     </application>
 
 </manifest>

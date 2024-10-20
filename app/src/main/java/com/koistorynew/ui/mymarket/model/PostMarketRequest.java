@@ -20,29 +20,6 @@ public class PostMarketRequest {
     private String type;
     private List<String> listImage;
 
-    public static class ImageData {
-        private String filePath;
-        private int imageOrder;
-
-        // Getters and Setters
-        public String getFilePath() {
-            return filePath;
-        }
-
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
-
-        public int getImageOrder() {
-            return imageOrder;
-        }
-
-        public void setImageOrder(int imageOrder) {
-            this.imageOrder = imageOrder;
-        }
-    }
-
-    // Getters and Setters
     public String getId() {
         return id;
     }

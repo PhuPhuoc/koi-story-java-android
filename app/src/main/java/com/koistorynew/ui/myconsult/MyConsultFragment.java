@@ -1,4 +1,4 @@
-package com.koistorynew.ui.consult;
+package com.koistorynew.ui.myconsult;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,28 +13,33 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.koistorynew.databinding.FragmentConsultBinding;
+import com.koistorynew.databinding.FragmentMyconsultBinding;
+import com.koistorynew.ui.consult.ConsultViewModel;
 import com.koistorynew.ui.consult.adapter.ConsultAdapter;
+import com.koistorynew.ui.myconsult.adapter.MyConsultAdapter;
+import com.koistorynew.ui.mymarket.AddMarketActivity;
 
-
-public class ConsultFragment extends Fragment {
-
-    private FragmentConsultBinding binding;
-    private ConsultViewModel consultViewModel;
-    private ConsultAdapter consultAdapter;
+public class MyConsultFragment extends Fragment {
+    private FragmentMyconsultBinding binding;
+    private MyConsultViewModel myConsultViewModel;
+    private MyConsultAdapter myConsultAdapter;
+    public static final int REQUEST_CODE_ADD_MARKET = 1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        consultViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
+
+        myConsultViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
             @NonNull
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new ConsultViewModel(getContext());
+                return (T) new MyConsultViewModel(getContext());
             }
-        }).get(ConsultViewModel.class);
+        }).get(MyConsultViewModel.class);
 
-        binding = FragmentConsultBinding.inflate(inflater, container, false);
+        binding = FragmentMyconsultBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         RecyclerView recyclerView = binding.recyclerViewMarket;
@@ -48,11 +53,15 @@ public class ConsultFragment extends Fragment {
 //                consultAdapter.updateData(postMarket);
 //            }
 //        });
-        consultViewModel.getConsult().observe(getViewLifecycleOwner(), postBlogs -> {
-            consultAdapter = new ConsultAdapter(postBlogs);
-            recyclerView.setAdapter(consultAdapter);
+        myConsultViewModel.getConsult().observe(getViewLifecycleOwner(), postBlogs -> {
+            myConsultAdapter = new MyConsultAdapter(postBlogs);
+            recyclerView.setAdapter(myConsultAdapter);
         });
-
+        FloatingActionButton fab = binding.fab;
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AddConsultActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_ADD_MARKET);
+        });
         return root;
     }
 

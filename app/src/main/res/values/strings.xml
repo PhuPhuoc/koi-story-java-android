@@ -16,6 +16,8 @@
     <string name="menu_blog">Blog</string>
     <string name="menu_market">Market</string>
     <string name="menu_mymarket">My Market</string>
+    <string name="menu_myconsult">My Consult</string>
+
 
 
 </resources>

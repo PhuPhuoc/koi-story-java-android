@@ -8,6 +8,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.koistorynew.ui.market.model.PostMarket;
 import com.koistorynew.ui.market.model.PostMarketDetail;
+import com.koistorynew.ui.myconsult.model.AddConsult;
 import com.koistorynew.ui.mymarket.model.MyMarket;
 import com.koistorynew.ui.mymarket.model.PostMarketRequest;
 
@@ -54,8 +55,8 @@ public class ApiService {
         requestQueue.add(stringRequest);
     }
 
-    public void getMyMarketPosts(final DataMyMarketCallback<List<MyMarket>> callback) {
-        String url = "http://api.koistory.site/api/v1/markets";
+    public void getMyMarketPosts(String userId, final DataMyMarketCallback<List<MyMarket>> callback) {
+        String url = "http://api.koistory.site/api/v1/markets/my/" + userId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -312,6 +313,50 @@ public class ApiService {
 
         requestQueue.add(stringRequest);
     }
+
+    public void createConsult(AddConsult request, final DataCallback<String> callback) {
+        String url = "http://api.koistory.site/api/v1/markets";
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("description", request.getDescription());
+            JSONArray imageArray = new JSONArray();
+            for (String image : request.getListImage()) {
+                imageArray.put(image);
+            }
+            jsonBody.put("list_image", imageArray);
+            jsonBody.put("product_name", request.getProductName());
+            jsonBody.put("user_id", request.getId());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onError();
+            return;
+        }
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                response -> {
+                    try {
+                        String message = response.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                },
+                error -> {
+                    // Log the error details
+                    Log.e("ApiService", "Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
+                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError();
+                }) {
+        };
+        requestQueue.add(jsonRequest);
+    }
+
 
     public interface DataCallback<T> {
         void onSuccess(T data);

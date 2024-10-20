@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.koistorynew.ApiService;
+import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.mymarket.model.MyMarket;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MyMarketViewModel extends ViewModel {
         error = new MutableLiveData<>();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         this.apiService = new ApiService(requestQueue);
-        fetchMyMarketPosts(); // L
+        fetchMyMarketPosts();
     }
 
     public LiveData<List<MyMarket>> getMyMarketPostsLiveData() {
@@ -47,8 +48,8 @@ public class MyMarketViewModel extends ViewModel {
     public void fetchMyMarketPosts() {
         isLoading.setValue(true);
         error.setValue(null);
-
-        apiService.getMyMarketPosts(new ApiService.DataMyMarketCallback<List<MyMarket>>() {
+        String userId = UserSessionManager.getInstance().getFbUid();
+        apiService.getMyMarketPosts(userId, new ApiService.DataMyMarketCallback<List<MyMarket>>() {
             @Override
             public void onSuccess(List<MyMarket> data) {
                 arr_post_market.setValue(data);

@@ -51,7 +51,7 @@ public class EditMarketActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post_market);
-        String id = UserSessionManager.getInstance().getFbUid();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Market Details");
         requestQueue = Volley.newRequestQueue(this);

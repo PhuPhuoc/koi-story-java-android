@@ -1,4 +1,4 @@
-package com.koistorynew.ui.consult.adapter;
+package com.koistorynew.ui.myconsult.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,42 +13,51 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
-import com.koistorynew.ui.consult.ConsultCommentActivity;
-import com.koistorynew.ui.consult.model.Consult;
+import com.koistorynew.ui.myconsult.MyConsultCommentActivity;
+import com.koistorynew.ui.myconsult.model.MyConsult;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultViewHolder> {
-    private List<Consult> consultList;
+public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.ConsultViewHolder> {
+    private List<MyConsult> consultList;
     private Context context;
 
-    public ConsultAdapter(List<Consult> consultList) {
+    public MyConsultAdapter(List<MyConsult> consultList) {
         this.consultList = consultList;
     }
 
-    public void updateData(List<Consult> newConsultList) {
+    public void updateData(List<MyConsult> newConsultList) {
         this.consultList = newConsultList;
         notifyDataSetChanged(); // Notify the adapter that the data has changed
     }
 
     @NonNull
     @Override
-    public ConsultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_consult, parent, false);
-        return new ConsultViewHolder(view);
+    public MyConsultAdapter.ConsultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_consult, parent, false);
+        return new MyConsultAdapter.ConsultViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConsultViewHolder holder, int position) {
-        Consult consult = consultList.get(position);
+    public void onBindViewHolder(@NonNull MyConsultAdapter.ConsultViewHolder holder, int position) {
+        MyConsult consult = consultList.get(position);
         holder.nameTextView.setText(consult.getUserName());
-        holder.datePostedTextView.setText("Ngày đăng"); // Replace with actual date if available
+        holder.datePostedTextView.setText("Ngày đăng");
         holder.descriptionTextView.setText(consult.getQuestion());
-        Picasso.get().load(consult.getImage()).into(holder.imageView);
+        String imageUrl = consult.getImage();
+
+        // Kiểm tra nếu URL không hợp lệ hoặc rỗng
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
+            Picasso.get().load(imageUrl).into(holder.imageView);
+        } else {
+            // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
+            holder.imageView.setImageResource(R.drawable.ic_add);
+        }
 
         holder.commentButton.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);
+            Intent intent = new Intent(view.getContext(), MyConsultCommentActivity.class);
             intent.putExtra("CONSULT_ID", consult.getId()); // Assuming you want to pass consult ID
             view.getContext().startActivity(intent);
         });

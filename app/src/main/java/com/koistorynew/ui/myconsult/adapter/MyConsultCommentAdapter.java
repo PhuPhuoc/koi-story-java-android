@@ -1,4 +1,4 @@
-package com.koistorynew.ui.consult.adapter;
+package com.koistorynew.ui.myconsult.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,30 +10,31 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
+import com.koistorynew.ui.consult.adapter.ConsultCommentAdapter;
 import com.koistorynew.ui.consult.model.ConsultComment;
+import com.koistorynew.ui.myconsult.model.MyConsultComment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ConsultCommentAdapter extends RecyclerView.Adapter<ConsultCommentAdapter.CommentViewHolder> {
+public class MyConsultCommentAdapter extends RecyclerView.Adapter<MyConsultCommentAdapter.CommentViewHolder> {
+    private List<MyConsultComment> commentList;
 
-    private List<ConsultComment> commentList;
-
-    public ConsultCommentAdapter(List<ConsultComment> commentList) {
+    public MyConsultCommentAdapter(List<MyConsultComment> commentList) {
         this.commentList = commentList;
     }
 
     @NonNull
     @Override
-    public ConsultCommentAdapter.CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyConsultCommentAdapter.CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_comment, parent, false);
-        return new ConsultCommentAdapter.CommentViewHolder(view);
+        return new MyConsultCommentAdapter.CommentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConsultCommentAdapter.CommentViewHolder holder, int position) {
-        ConsultComment comment = commentList.get(position);
+    public void onBindViewHolder(@NonNull MyConsultCommentAdapter.CommentViewHolder holder, int position) {
+        MyConsultComment comment = commentList.get(position);
         holder.userNameTextView.setText(comment.getUserName());
         holder.commentTextView.setText(comment.getCommentText());
         Picasso.get().load(comment.getAvatarUrl())

@@ -28,6 +28,11 @@
         android:label="@string/menu_mymarket"
         tools:layout="@layout/fragment_mymarket" />
     <fragment
+        android:id="@+id/nav_myconsult"
+        android:name="com.koistorynew.ui.myconsult.MyConsultFragment"
+        android:label="@string/menu_myconsult"
+        tools:layout="@layout/fragment_myconsult" />
+    <fragment
         android:id="@+id/nav_home"
         android:name="com.koistorynew.ui.home.HomeFragment"
         android:label="@string/menu_home"

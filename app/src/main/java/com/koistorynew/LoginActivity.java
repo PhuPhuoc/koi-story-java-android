@@ -67,7 +67,20 @@ public class LoginActivity extends AppCompatActivity {
 
                         try {
                             JSONObject data = response.getJSONObject("data");
+                            String userId = data.getString("user_id");
+                            String fbUid = data.getString("fb_uid");
+                            String email = data.getString("email");
                             String displayName = data.getString("display_name");
+                            String profilePictureUrl = data.getString("profile_picture_url");
+
+                            UserSessionManager.getInstance().setUserData(
+                                    userId,
+                                    fbUid,
+                                    email,
+                                    displayName,
+                                    profilePictureUrl
+                            );
+
                             Toast.makeText(LoginActivity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);

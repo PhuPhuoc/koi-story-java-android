@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.koistorynew.R;
-import com.koistorynew.UserSessionManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,21 +31,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddMarketActivity extends AppCompatActivity {
-
+public class EditMarketActivity extends AppCompatActivity {
     private EditText editTextName, editTextPostType, editTextColor, editTextOld, editTextAddress,
             editTextSize, editTextTitle, editTextProductType, editTextType, editTextPhone,
             editTextPrice, editTextDescription;
-    private Button uploadImageButton, submitButton;
+    private Button uploadImageButton, editButton;
     private LinearLayout imageContainer; // Container for selected images
-    private List<Uri> selectedImages;  // List of selected images
-    private MyMarketViewModel myMarketViewModel;
+    private List<Uri> selectedImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_post_market);
-        String id = UserSessionManager.getInstance().getUserId();
+        setContentView(R.layout.activity_edit_post_market);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Market Details");
 
@@ -57,6 +54,11 @@ public class AddMarketActivity extends AppCompatActivity {
 //                return (T) new MyMarketViewModel(AddMarketActivity.this);
 //            }
 //        }).get(MyMarketViewModel.class);
+        String itemId = getIntent().getStringExtra("ITEM_ID");
+        if (itemId != null) {
+            Log.d("EditMarketActivity", "Editing item with ID: " + itemId);
+            // Bạn có thể sử dụng itemId để tải dữ liệu của mục này để hiển thị trên giao diện người dùng.
+        }
 
         editTextName = findViewById(R.id.edit_text_name);
         editTextPostType = findViewById(R.id.edit_text_post_type);
@@ -71,7 +73,7 @@ public class AddMarketActivity extends AppCompatActivity {
         editTextPrice = findViewById(R.id.edit_text_price);
         editTextDescription = findViewById(R.id.edit_text_description);
         uploadImageButton = findViewById(R.id.button_upload_image);
-        submitButton = findViewById(R.id.button_submit);
+        editButton = findViewById(R.id.button_edit);
         imageContainer = findViewById(R.id.image_container); // Initialize image container
         selectedImages = new ArrayList<>();  // Initialize the selected images list
 
@@ -93,7 +95,7 @@ public class AddMarketActivity extends AppCompatActivity {
                             selectedImages.add(imageUri);  // Add single image
                             addImageToContainer(imageUri); // Display the image
                         }
-                        Toast.makeText(AddMarketActivity.this, "Selected " + selectedImages.size() + " images", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditMarketActivity.this, "Selected " + selectedImages.size() + " images", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -107,7 +109,7 @@ public class AddMarketActivity extends AppCompatActivity {
         });
 
         // Handle the "Submit" button click
-        submitButton.setOnClickListener(v -> {
+        editButton.setOnClickListener(v -> {
             String name = editTextName.getText().toString().trim();
             String postType = editTextPostType.getText().toString().trim();
             String color = editTextColor.getText().toString().trim();
@@ -122,7 +124,7 @@ public class AddMarketActivity extends AppCompatActivity {
             String description = editTextDescription.getText().toString().trim();
 
             if (name.isEmpty() || priceStr.isEmpty() || description.isEmpty()) {
-                Toast.makeText(AddMarketActivity.this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditMarketActivity.this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -131,7 +133,7 @@ public class AddMarketActivity extends AppCompatActivity {
             try {
                 price = Integer.parseInt(priceStr);
             } catch (NumberFormatException e) {
-                Toast.makeText(AddMarketActivity.this, "Please enter a valid price", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditMarketActivity.this, "Please enter a valid price", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -155,7 +157,7 @@ public class AddMarketActivity extends AppCompatActivity {
 
                 // System fields
                 requestData.put("created_at", String.valueOf(System.currentTimeMillis()));
-                requestData.put("user_id", id); // Replace with actual user ID
+                requestData.put("user_id", "user123"); // Replace with actual user ID
 
                 // Handle images
                 JSONArray imageList = new JSONArray();
@@ -166,7 +168,7 @@ public class AddMarketActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(AddMarketActivity.this, "Error creating JSON", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditMarketActivity.this, "Error creating JSON", Toast.LENGTH_SHORT).show();
             }
 
             Log.d("ProductData", requestData.toString());
@@ -191,7 +193,7 @@ public class AddMarketActivity extends AppCompatActivity {
             // });
 
             // Handle submit information here
-            Toast.makeText(AddMarketActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditMarketActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -227,7 +229,7 @@ public class AddMarketActivity extends AppCompatActivity {
                 // Xóa ảnh khỏi container và danh sách URI
                 imageContainer.removeView(frameLayout);
                 selectedImages.remove(imageUri);
-                Toast.makeText(AddMarketActivity.this, "Image removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditMarketActivity.this, "Image removed", Toast.LENGTH_SHORT).show();
             }
         });
 

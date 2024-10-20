@@ -27,7 +27,6 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.BlogViewHo
         this.postList = postList;
     }
 
-
     public void updateData(List<PostMarket> newPostMarketList) {
         this.postList = newPostMarketList;
         notifyDataSetChanged(); // Notify the adapter that the data has changed
@@ -45,13 +44,20 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.BlogViewHo
         PostMarket product = postList.get(position);
         holder.nameTextView.setText(product.getArtName());
         holder.priceTextView.setText("$" + product.getPrice());
-        Picasso.get().load(product.getImage()).into(holder.imageView);
+        String imageUrl = product.getImage();
+
+        // Kiểm tra nếu URL không hợp lệ hoặc rỗng
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
+            Picasso.get().load(imageUrl).into(holder.imageView);
+        } else {
+            // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
+            holder.imageView.setImageResource(R.drawable.ic_add);
+        }
 
         holder.itemView.setOnClickListener(view -> {
-            // context ->  view.getContext()
             Intent intent = new Intent(view.getContext(), MarketDetailsActivity.class);
             intent.putExtra("PRODUCT_ID", product.getId());
-            //context.startActivity(intent);
             view.getContext().startActivity(intent);
         });
 

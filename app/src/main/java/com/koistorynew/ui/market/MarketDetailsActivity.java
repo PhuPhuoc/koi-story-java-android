@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.koistorynew.R;
 import com.koistorynew.ApiService;
+import com.koistorynew.ui.consult.ConsultCommentActivity;
 import com.koistorynew.ui.market.adapter.ImageSliderAdapter;
 import com.koistorynew.ui.market.model.PostMarketDetail;
 
@@ -71,6 +72,12 @@ public class MarketDetailsActivity extends AppCompatActivity {
 
         // Fetch market post detail
         fetchMarketPostDetail(productId);
+        Button seeMoreButton = findViewById(R.id.seeMoreButton);
+        seeMoreButton.setOnClickListener(v -> {
+            Intent commentIntent = new Intent(MarketDetailsActivity.this, MarketCommentActivity.class);
+            commentIntent.putExtra("PRODUCT_ID", productId); // truyền ID sản phẩm
+            startActivity(commentIntent);
+        });
     }
 
     private void initializeViews() {
@@ -96,6 +103,8 @@ public class MarketDetailsActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(currentItem + 1);
             }
         });
+
+
     }
 
     private void fetchMarketPostDetail(String productId) {
@@ -115,7 +124,6 @@ public class MarketDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(PostMarketDetail detail) {
-        Log.d("detail", "detail: " + detail);
         TextView nameTextView = findViewById(R.id.artNameTextView);
         TextView descriptionTextView = findViewById(R.id.descriptionTextView);
         TextView priceTextView = findViewById(R.id.priceTextView);
@@ -143,9 +151,6 @@ public class MarketDetailsActivity extends AppCompatActivity {
             createAtTextView.setText("N/A");
         }
 
-//        Log.d("address", "updateUI: " + detail.getSellerAddress());
-
-        // Update image slider
         if (detail.getListImage() != null && !detail.getListImage().isEmpty()) {
             List<String> imageUrls = new ArrayList<>();
             for (PostMarketDetail.ImageData imageData : detail.getListImage()) {
@@ -163,6 +168,7 @@ public class MarketDetailsActivity extends AppCompatActivity {
                 startActivity(callIntent);
             }
         });
+
     }
 
     private String formatDate(String dateString) {

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.databinding.FragmentMarketBinding;
 import com.koistorynew.ui.market.adapter.MarketAdapter;
+import static android.app.Activity.RESULT_OK;
 
 public class MarketFragment extends Fragment {
     private FragmentMarketBinding binding;
@@ -23,6 +24,7 @@ public class MarketFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         marketViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory() {
             @NonNull
             @Override

@@ -3,97 +3,171 @@ package com.koistorynew.ui.mymarket.model;
 import java.util.List;
 
 public class PostMarketRequest {
-    private String color;
-    private String created_at;
-    private String description;
-    private List<String> list_image;
-    private String old;
-    private String phone_number;
-    private String post_type;
-    private int price;
-    private String product_name;
-    private String product_type;
-    private String seller_address;
-    private String size;
+    private String id;
+    private String userId;
+    private String postType;
     private String title;
+    private String createdAt;
+    private String productName;
+    private String productType;
+    private double price;
+    private String sellerAddress;
+    private String phoneNumber;
+    private String description;
+    private String color;
+    private String size;
+    private String old;
     private String type;
-    private String user_id;
+    private List<PostMarketRequest.ImageData> listImage;
 
-    public PostMarketRequest(String color, List<String> list_image, String created_at, String description, String phone_number, String old, String post_type, int price, String product_name, String seller_address, String product_type, String size, String title, String user_id, String type) {
-        this.color = color;
-        this.list_image = list_image;
-        this.created_at = created_at;
-        this.description = description;
-        this.phone_number = phone_number;
-        this.old = old;
-        this.post_type = post_type;
-        this.price = price;
-        this.product_name = product_name;
-        this.seller_address = seller_address;
-        this.product_type = product_type;
-        this.size = size;
-        this.title = title;
-        this.user_id = user_id;
-        this.type = type;
+    public static class ImageData {
+        private String filePath;
+        private int imageOrder;
+
+        // Getters and Setters
+        public String getFilePath() {
+            return filePath;
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+
+        public int getImageOrder() {
+            return imageOrder;
+        }
+
+        public void setImageOrder(int imageOrder) {
+            this.imageOrder = imageOrder;
+        }
     }
 
-    public String getColor() {
-        return color;
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getPost_type() {
-        return post_type;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public String getPostType() {
+        return postType;
     }
 
-    public String getSeller_address() {
-        return seller_address;
-    }
-
-    public String getSize() {
-        return size;
+    public void setPostType(String postType) {
+        this.postType = postType;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getProduct_type() {
-        return product_type;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public int getPrice() {
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
+    }
+
+    public double getPrice() {
         return price;
     }
 
-    public List<String> getList_image() {
-        return list_image;
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getSellerAddress() {
+        return sellerAddress;
+    }
+
+    public void setSellerAddress(String sellerAddress) {
+        this.sellerAddress = sellerAddress;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getOld() {
         return old;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public void setOld(String old) {
+        this.old = old;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<PostMarketRequest.ImageData> getListImage() {
+        return listImage;
+    }
+
+    public void setListImage(List<PostMarketRequest.ImageData> listImage) {
+        this.listImage = listImage;
     }
 }

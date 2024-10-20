@@ -1,10 +1,15 @@
 package com.koistorynew.ui.mymarket;
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.koistorynew.ui.market.model.PostMarket;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.koistorynew.ApiService;
 import com.koistorynew.ui.mymarket.model.MyMarket;
 
 import java.util.ArrayList;
@@ -13,23 +18,81 @@ import java.util.List;
 
 public class MyMarketViewModel extends ViewModel {
     private final MutableLiveData<List<MyMarket>> arr_post_market;
+    private static final String TAG = "MyMarketViewModel";
+    private final MutableLiveData<Boolean> isLoading;
+    private final MutableLiveData<String> error;
+    private final ApiService apiService;
 
-    public MyMarketViewModel() {
+    public MyMarketViewModel(Context context) {
         arr_post_market = new MutableLiveData<>();
-        arr_post_market.setValue(generateDummyData());
+        isLoading = new MutableLiveData<>(false);
+        error = new MutableLiveData<>();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        this.apiService = new ApiService(requestQueue);
+        fetchMyMarketPosts(); // L
     }
 
-    public LiveData<List<MyMarket>> getDataFromBlogViewModel() {
+    public LiveData<List<MyMarket>> getMyMarketPostsLiveData() {
         return arr_post_market;
     }
 
-    private List<MyMarket> generateDummyData() {
-        List<MyMarket> dummyList = new ArrayList<>();
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
 
-        dummyList.add(new MyMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"123456789231456789"));
-        dummyList.add(new MyMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"1234567891278212"));
-        dummyList.add(new MyMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"ahahaahahahhahaha"));
-        dummyList.add(new MyMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"for testing onlin"));
-        return dummyList;
+    public LiveData<String> getError() {
+        return error;
+    }
+
+    public void fetchMyMarketPosts() {
+        isLoading.setValue(true);
+        error.setValue(null);
+
+        apiService.getMyMarketPosts(new ApiService.DataMyMarketCallback<List<MyMarket>>() {
+            @Override
+            public void onSuccess(List<MyMarket> data) {
+                arr_post_market.setValue(data);
+                isLoading.setValue(false);
+                error.setValue(null);
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "Failed to fetch market posts.");
+                isLoading.setValue(false);
+                error.setValue("Failed to fetch market posts.");
+            }
+        });
+    }
+
+    public void refreshMarketPosts() {
+        fetchMyMarketPosts();
+    }
+
+    public void deleteMarketItem(String itemId) {
+        apiService.deleteMarketPost(itemId, new ApiService.DataCallback<String>() {
+            @Override
+            public void onSuccess(String message) {
+                Log.d(TAG, "Mục đã được xóa thành công: " + message);
+                // Update the current list instead of fetching new data
+                List<MyMarket> currentList = arr_post_market.getValue();
+                if (currentList != null) {
+                    List<MyMarket> updatedList = new ArrayList<>(currentList);
+                    updatedList.removeIf(item -> item.getId().equals(itemId));
+                    arr_post_market.setValue(updatedList);
+                }
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "Failed to delete market item.");
+                error.setValue("Failed to delete market item");
+            }
+        });
+    }
+
+    // Method to clear error
+    public void clearError() {
+        error.setValue(null);
     }
 }

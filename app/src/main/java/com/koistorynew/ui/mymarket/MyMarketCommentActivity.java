@@ -36,6 +36,9 @@ public class MyMarketCommentActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
 
+
+
+
         // Dummy data with avatar URLs
         commentList = new ArrayList<>();
         commentList.add(new PostMyMarketComment("Tèo Phan", "Bởi vì vợ anh 10 là đàn bà nên thích thống kê, đàn bà thường giống nhau.",

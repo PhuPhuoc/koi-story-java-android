@@ -61,7 +61,7 @@ public class MarketDetailsActivity extends AppCompatActivity {
         }).get(MarketViewModel.class);
 
         Intent intent = getIntent();
-        String productId = intent.getStringExtra("PRODUCT_ID");
+        String postID = intent.getStringExtra("PRODUCT_ID");
 
         // Initialize RequestQueue and ApiService
         requestQueue = Volley.newRequestQueue(this);
@@ -71,11 +71,11 @@ public class MarketDetailsActivity extends AppCompatActivity {
         initializeViews();
 
         // Fetch market post detail
-        fetchMarketPostDetail(productId);
+        fetchMarketPostDetail(postID);
         Button seeMoreButton = findViewById(R.id.seeMoreButton);
         seeMoreButton.setOnClickListener(v -> {
             Intent commentIntent = new Intent(MarketDetailsActivity.this, MarketCommentActivity.class);
-            commentIntent.putExtra("PRODUCT_ID", productId); // truyền ID sản phẩm
+            commentIntent.putExtra("POST_ID", postID); // truyền ID sản phẩm
             startActivity(commentIntent);
         });
     }

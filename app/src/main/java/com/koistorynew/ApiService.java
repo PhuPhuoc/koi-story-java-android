@@ -154,7 +154,7 @@ public class ApiService {
 
     public void createMarketPost(PostMarketRequest request, final DataCallback<String> callback) {
         String url = "http://api.koistory.site/api/v1/markets";
-
+        String user_id = UserSessionManager.getInstance().getFbUid();
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("color", request.getColor());
@@ -174,7 +174,7 @@ public class ApiService {
             jsonBody.put("size", request.getSize());
             jsonBody.put("title", request.getTitle());
             jsonBody.put("type", request.getType());
-            jsonBody.put("user_id", request.getId());
+            jsonBody.put("user_id", user_id);
 
             // Convert list_image to JSONArray
             // Use JSONArray for the list_image

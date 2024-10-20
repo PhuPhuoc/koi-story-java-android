@@ -63,7 +63,6 @@ public class MyMarketDetailActivity extends AppCompatActivity {
             }
         }).get(MyMarketViewModel.class);
 
-
         Intent intent = getIntent();
         String productId = intent.getStringExtra("PRODUCT_ID");
 

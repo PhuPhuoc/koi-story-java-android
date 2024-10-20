@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
+import com.koistorynew.ui.mymarket.EditImagesActivity;
 import com.koistorynew.ui.mymarket.EditMarketActivity;
 import com.koistorynew.ui.mymarket.MyMarketDetailActivity;
 import com.koistorynew.ui.mymarket.model.MyMarket;
@@ -27,10 +28,10 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
     private Context context;
     private final OnDeleteClickListener onDeleteClickListener; // Thêm interface
 
-    public MyMarketAdapter(List<MyMarket> postList, OnDeleteClickListener onDeleteClickListener) {
+    public MyMarketAdapter(Context context, List<MyMarket> postList, OnDeleteClickListener onDeleteClickListener) {
+        this.context = context; // Initialize context
         this.postList = postList;
         this.onDeleteClickListener = onDeleteClickListener;
-
     }
 
     public void updateData(List<MyMarket> newPostMarketList) {
@@ -72,12 +73,13 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
             onDeleteClickListener.onDeleteClick(product.getId());
         });
         holder.editButton.setOnClickListener(v -> {
-            // Log ID của mục
-            Log.d("MyMarketAdapter", "Edit button clicked for item ID: " + product.getId());
-
-            // Mở EditMarketActivity với ID
             Intent intent = new Intent(context, EditMarketActivity.class);
-            intent.putExtra("ITEM_ID", product.getId());
+            intent.putExtra("ID", product.getId());
+            context.startActivity(intent);
+        });
+        holder.editImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditImagesActivity.class);
+            intent.putExtra("ID", product.getId());
             context.startActivity(intent);
         });
     }
@@ -93,7 +95,7 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
         public TextView priceTextView;
         public Button deleteButton; // Thêm ImageView cho nút xóa
         public Button editButton;
-
+        public  Button editImageButton;
         public BlogViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
@@ -101,6 +103,7 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
             priceTextView = itemView.findViewById(R.id.priceTextView);
             deleteButton = itemView.findViewById(R.id.deleteButton);
             editButton = itemView.findViewById(R.id.editButton);
+            editImageButton= itemView.findViewById(R.id.editImageButton);
         }
     }
 

@@ -48,7 +48,7 @@ public class MyMarketFragment extends Fragment {
         // Quan sát LiveData từ BlogViewModel để cập nhật dữ liệu cho RecyclerView khi thay đổi
         myMarketViewModel.getMyMarketPostsLiveData().observe(getViewLifecycleOwner(), postMarket -> {
             if (myMarketAdapter == null) {
-                myMarketAdapter = new MyMarketAdapter(postMarket, itemId -> showDeleteConfirmationDialog(itemId));
+                myMarketAdapter = new MyMarketAdapter(getContext(),postMarket, itemId -> showDeleteConfirmationDialog(itemId));
                 recyclerView.setAdapter(myMarketAdapter);
             } else {
                 myMarketAdapter.updateData(postMarket);
@@ -57,7 +57,6 @@ public class MyMarketFragment extends Fragment {
 
         FloatingActionButton fab = binding.fab;
         fab.setOnClickListener(v -> {
-            // Mở AddMarketActivity khi bấm FAB
             Intent intent = new Intent(getActivity(), AddMarketActivity.class);
             startActivityForResult(intent, REQUEST_CODE_ADD_MARKET);
         });
@@ -86,13 +85,9 @@ public class MyMarketFragment extends Fragment {
                     // Log ID của mục
                     Log.d("MyMarketFragment", "Đã xóa mục có ID: " + itemId);
 
-                    // Hiển thị Toast
                     Toast.makeText(getContext(), "Mục đã được xóa", Toast.LENGTH_SHORT).show();
                     onResume();
-                    // Gọi hàm xóa mục trong ViewModel
                     myMarketViewModel.deleteMarketItem(itemId);
-
-                    // Làm mới dữ liệu
                     myMarketViewModel.refreshMarketPosts();
                 })
                 .setNegativeButton("Hủy", null)

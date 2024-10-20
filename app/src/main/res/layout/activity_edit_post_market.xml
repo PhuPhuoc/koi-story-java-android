@@ -83,12 +83,6 @@
             android:layout_height="wrap_content"
             android:hint="Description" />
 
-        <Button
-            android:id="@+id/button_upload_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upload Images" />
-
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -34,10 +34,9 @@
         <activity android:name=".ui.mymarket.MyMarketDetailActivity" />
         <activity android:name=".ui.mymarket.MyMarketCommentActivity" />
         <activity android:name=".ui.mymarket.AddMarketActivity" />
+        <activity android:name=".ui.mymarket.EditMarketActivity" />
+        <activity android:name=".ui.mymarket.EditImagesActivity" />
         <activity android:name=".ui.consult.ConsultCommentActivity" />
-
-
-
     </application>
 
 </manifest>

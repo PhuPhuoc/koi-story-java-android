@@ -18,7 +18,7 @@ public class PostMarketRequest {
     private String size;
     private String old;
     private String type;
-    private List<PostMarketRequest.ImageData> listImage;
+    private List<String> listImage;
 
     public static class ImageData {
         private String filePath;
@@ -163,11 +163,11 @@ public class PostMarketRequest {
         this.type = type;
     }
 
-    public List<PostMarketRequest.ImageData> getListImage() {
+    public List<String> getListImage() {
         return listImage;
     }
 
-    public void setListImage(List<PostMarketRequest.ImageData> listImage) {
+    public void setListImage(List<String> listImage) {
         this.listImage = listImage;
     }
 }

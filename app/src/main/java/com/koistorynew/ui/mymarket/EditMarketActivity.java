@@ -18,14 +18,19 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.koistorynew.ApiService;
 import com.koistorynew.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.koistorynew.UserSessionManager;
+import com.koistorynew.ui.market.model.PostMarketDetail;
+import com.koistorynew.ui.mymarket.model.PostMarketRequest;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -35,29 +40,38 @@ public class EditMarketActivity extends AppCompatActivity {
     private EditText editTextName, editTextPostType, editTextColor, editTextOld, editTextAddress,
             editTextSize, editTextTitle, editTextProductType, editTextType, editTextPhone,
             editTextPrice, editTextDescription;
-    private Button uploadImageButton, editButton;
+    private Button editButton;
     private LinearLayout imageContainer; // Container for selected images
     private List<Uri> selectedImages;
+    private ApiService apiService;
+    private RequestQueue requestQueue;
+    private MyMarketViewModel myMarketViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post_market);
-
+        String id = UserSessionManager.getInstance().getFbUid();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Market Details");
+        requestQueue = Volley.newRequestQueue(this);
+        apiService = new ApiService(requestQueue);
+        Intent intentId = getIntent();
+        String productId = intentId.getStringExtra("ID");
 
-//        myMarketViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-//            @NonNull
-//            @Override
-//            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-//                return (T) new MyMarketViewModel(AddMarketActivity.this);
-//            }
-//        }).get(MyMarketViewModel.class);
+        fetchMyMarketPostDetail(productId);
+
+        myMarketViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new MyMarketViewModel(EditMarketActivity.this);
+            }
+        }).get(MyMarketViewModel.class);
+
         String itemId = getIntent().getStringExtra("ITEM_ID");
         if (itemId != null) {
             Log.d("EditMarketActivity", "Editing item with ID: " + itemId);
-            // Bạn có thể sử dụng itemId để tải dữ liệu của mục này để hiển thị trên giao diện người dùng.
         }
 
         editTextName = findViewById(R.id.edit_text_name);
@@ -72,10 +86,9 @@ public class EditMarketActivity extends AppCompatActivity {
         editTextPhone = findViewById(R.id.edit_text_phone);
         editTextPrice = findViewById(R.id.edit_text_price);
         editTextDescription = findViewById(R.id.edit_text_description);
-        uploadImageButton = findViewById(R.id.button_upload_image);
         editButton = findViewById(R.id.button_edit);
-        imageContainer = findViewById(R.id.image_container); // Initialize image container
-        selectedImages = new ArrayList<>();  // Initialize the selected images list
+        imageContainer = findViewById(R.id.image_container);
+        selectedImages = new ArrayList<>();
 
         // Open intent to pick multiple images from the gallery
         ActivityResultLauncher<Intent> pickImagesLauncher = registerForActivityResult(
@@ -100,15 +113,6 @@ public class EditMarketActivity extends AppCompatActivity {
                 }
         );
 
-        // Handle the "Upload Image" button click
-        uploadImageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // Allow multiple image selection
-            pickImagesLauncher.launch(Intent.createChooser(intent, "Select Pictures"));
-        });
-
-        // Handle the "Submit" button click
         editButton.setOnClickListener(v -> {
             String name = editTextName.getText().toString().trim();
             String postType = editTextPostType.getText().toString().trim();
@@ -137,64 +141,35 @@ public class EditMarketActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create JSON object
-            JSONObject requestData = new JSONObject();
-            try {
-                requestData.put("product_name", name);
-                requestData.put("price", price);
-                requestData.put("description", description);
+            // Create PostMarketRequest object
+            PostMarketRequest request = new PostMarketRequest();
+            request.setProductName(name);
+            request.setPrice(price);
+            request.setDescription(description);
+            request.setPostType(postType);
+            request.setColor(color);
+            request.setOld(old);
+            request.setSellerAddress(address);
+            request.setSize(size);
+            request.setTitle(title);
+            request.setProductType(productType);
+            request.setType(type);
+            request.setPhoneNumber(phone);
 
-                // Optional fields - using empty string if not provided
-                requestData.put("post_type", postType.isEmpty() ? "" : postType);
-                requestData.put("color", color.isEmpty() ? "" : color);
-                requestData.put("old", old.isEmpty() ? "" : old);
-                requestData.put("seller_address", address.isEmpty() ? "" : address);
-                requestData.put("size", size.isEmpty() ? "" : size);
-                requestData.put("title", title.isEmpty() ? "" : title);
-                requestData.put("product_type", productType.isEmpty() ? "" : productType);
-                requestData.put("type", type.isEmpty() ? "" : type);
-                requestData.put("phone_number", phone.isEmpty() ? "" : phone);
-
-                // System fields
-                requestData.put("created_at", String.valueOf(System.currentTimeMillis()));
-                requestData.put("user_id", "user123"); // Replace with actual user ID
-
-                // Handle images
-                JSONArray imageList = new JSONArray();
-                for (Uri imageUri : selectedImages) {
-                    imageList.put(imageUri.toString());
+            apiService.updateMarketPost(productId, request, new ApiService.DataCallback<String>() {
+                @Override
+                public void onSuccess(String data) {
+                    Toast.makeText(EditMarketActivity.this, "Product updated successfully", Toast.LENGTH_SHORT).show();
+                    finish(); // Close activity or navigate back
                 }
-                requestData.put("list_image", imageList);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(EditMarketActivity.this, "Error creating JSON", Toast.LENGTH_SHORT).show();
-            }
-
-            Log.d("ProductData", requestData.toString());
-
-
-            // TODO: Call your API here
-            // apiService.createMarketPost(requestData, new ApiService.DataCallback<String>() {
-            //     @Override
-            //     public void onSuccess(String response) {
-            //         runOnUiThread(() -> {
-            //             Toast.makeText(AddMarketActivity.this, "Product submitted successfully", Toast.LENGTH_SHORT).show();
-            //             finish();
-            //         });
-            //     }
-            //
-            //     @Override
-            //     public void onError() {
-            //         runOnUiThread(() -> {
-            //             Toast.makeText(AddMarketActivity.this, "Failed to submit product", Toast.LENGTH_SHORT).show();
-            //         });
-            //     }
-            // });
-
-            // Handle submit information here
-            Toast.makeText(EditMarketActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onError() {
+                    Toast.makeText(EditMarketActivity.this, "Error updating product", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+
     }
 
     private void addImageToContainer(Uri imageUri) {
@@ -281,11 +256,79 @@ public class EditMarketActivity extends AppCompatActivity {
         return inSampleSize;
     }
 
+    private void fetchMyMarketPostDetail(String productId) {
+        apiService.getMarketPostDetail(productId, new ApiService.DetailCallback() {
+            @Override
+            public void onSuccess(PostMarketDetail postMarketDetail) {
+                PostMarketRequest postMarketData = convertToPostMarketRequest(postMarketDetail);
+
+                runOnUiThread(() -> {
+                    try {
+                        editTextName.setText(postMarketData.getProductName());
+                        editTextPostType.setText(postMarketData.getPostType());
+                        editTextColor.setText(postMarketData.getColor());
+                        editTextOld.setText(postMarketData.getOld());
+                        editTextAddress.setText(postMarketData.getSellerAddress());
+                        editTextSize.setText(postMarketData.getSize());
+                        editTextTitle.setText(postMarketData.getTitle());
+                        editTextProductType.setText(postMarketData.getProductType());
+                        editTextType.setText(postMarketData.getType());
+                        editTextPhone.setText(postMarketData.getPhoneNumber());
+                        editTextPrice.setText(String.valueOf((int) postMarketData.getPrice()));
+                        editTextDescription.setText(postMarketData.getDescription());
+                        myMarketViewModel.refreshMarketPosts();
+
+                    } catch (Exception e) {
+                        Log.e("EditMarketActivity", "Error setting data: " + e.getMessage());
+                        Toast.makeText(EditMarketActivity.this, "Error loading post details", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError() {
+                runOnUiThread(() -> {
+                    Log.e("EditMarketActivity", "Failed to fetch post details");
+                    Toast.makeText(EditMarketActivity.this,
+                            "Failed to fetch post details", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    private PostMarketRequest convertToPostMarketRequest(PostMarketDetail detail) {
+        PostMarketRequest request = new PostMarketRequest();
+        request.setId(detail.getId());
+        request.setUserId(detail.getUserId());
+        request.setPostType(detail.getPostType());
+        request.setTitle(detail.getTitle());
+        request.setCreatedAt(detail.getCreatedAt());
+        request.setProductName(detail.getProductName());
+        request.setProductType(detail.getProductType());
+        request.setPrice(detail.getPrice());
+        request.setSellerAddress(detail.getSellerAddress());
+        request.setPhoneNumber(detail.getPhoneNumber());
+        request.setDescription(detail.getDescription());
+        request.setColor(detail.getColor());
+        request.setSize(detail.getSize());
+        request.setOld(detail.getOld());
+        request.setType(detail.getType());
+
+        // Chuyển đổi danh sách ảnh
+        if (detail.getListImage() != null) {
+            List<String> imageDataList = new ArrayList<>();
+            // Thực hiện chuyển đổi tùy theo cấu trúc của PostMarketDetail
+            request.setListImage(imageDataList);
+        }
+
+        return request;
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed(); // Quay lại trang trước đó
-//        myMarketViewModel.refreshMarketPosts();
-//        Log.d("tesssssss", "Refreshing market posts on back navigation");
+        myMarketViewModel.refreshMarketPosts();
+        Log.d("tesssssss", "Refreshing market posts on back navigation");
         return true;
     }
 }

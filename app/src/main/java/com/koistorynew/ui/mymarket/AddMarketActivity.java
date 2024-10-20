@@ -1,5 +1,6 @@
 package com.koistorynew.ui.mymarket;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,11 +19,23 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.koistorynew.ApiService;
 import com.koistorynew.R;
 import com.koistorynew.UserSessionManager;
+import com.koistorynew.ui.market.MarketDetailsActivity;
+import com.koistorynew.ui.market.MarketViewModel;
+import com.koistorynew.ui.mymarket.model.PostMarketRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +44,7 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddMarketActivity extends AppCompatActivity {
 
@@ -41,39 +55,49 @@ public class AddMarketActivity extends AppCompatActivity {
     private LinearLayout imageContainer; // Container for selected images
     private List<Uri> selectedImages;  // List of selected images
     private MyMarketViewModel myMarketViewModel;
+    private ApiService apiService;
+    private RequestQueue requestQueue;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post_market);
-        String id = UserSessionManager.getInstance().getUserId();
+        String id = UserSessionManager.getInstance().getFbUid();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("My Market Details");
+        getSupportActionBar().setTitle("Add market post");
+        requestQueue = Volley.newRequestQueue(this);
+        apiService = new ApiService(requestQueue);
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
 
-//        myMarketViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-//            @NonNull
-//            @Override
-//            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-//                return (T) new MyMarketViewModel(AddMarketActivity.this);
-//            }
-//        }).get(MyMarketViewModel.class);
+        myMarketViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new MyMarketViewModel(AddMarketActivity.this);
+            }
+        }).get(MyMarketViewModel.class);
 
-        editTextName = findViewById(R.id.edit_text_name);
-        editTextPostType = findViewById(R.id.edit_text_post_type);
         editTextColor = findViewById(R.id.edit_text_color);
+        editTextDescription = findViewById(R.id.edit_text_description);
+        selectedImages = new ArrayList<>();
         editTextOld = findViewById(R.id.edit_text_old);
+        editTextPhone = findViewById(R.id.edit_text_phone);
+        editTextPostType = findViewById(R.id.edit_text_post_type);
+        editTextPrice = findViewById(R.id.edit_text_price);
+        editTextName = findViewById(R.id.edit_text_name);
+        editTextProductType = findViewById(R.id.edit_text_product_type);
         editTextAddress = findViewById(R.id.edit_text_address);
         editTextSize = findViewById(R.id.edit_text_size);
         editTextTitle = findViewById(R.id.edit_text_title);
-        editTextProductType = findViewById(R.id.edit_text_product_type);
         editTextType = findViewById(R.id.edit_text_type);
-        editTextPhone = findViewById(R.id.edit_text_phone);
-        editTextPrice = findViewById(R.id.edit_text_price);
-        editTextDescription = findViewById(R.id.edit_text_description);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);
-        imageContainer = findViewById(R.id.image_container); // Initialize image container
-        selectedImages = new ArrayList<>();  // Initialize the selected images list
+        imageContainer = findViewById(R.id.image_container);
 
         // Open intent to pick multiple images from the gallery
         ActivityResultLauncher<Intent> pickImagesLauncher = registerForActivityResult(
@@ -106,7 +130,6 @@ public class AddMarketActivity extends AppCompatActivity {
             pickImagesLauncher.launch(Intent.createChooser(intent, "Select Pictures"));
         });
 
-        // Handle the "Submit" button click
         submitButton.setOnClickListener(v -> {
             String name = editTextName.getText().toString().trim();
             String postType = editTextPostType.getText().toString().trim();
@@ -121,12 +144,11 @@ public class AddMarketActivity extends AppCompatActivity {
             String priceStr = editTextPrice.getText().toString().trim();
             String description = editTextDescription.getText().toString().trim();
 
-            if (name.isEmpty() || priceStr.isEmpty() || description.isEmpty()) {
-                Toast.makeText(AddMarketActivity.this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty() || priceStr.isEmpty() || description.isEmpty() || selectedImages.isEmpty()) {
+                Toast.makeText(AddMarketActivity.this, "Please fill in all required fields and upload images", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Convert price to integer
             int price;
             try {
                 price = Integer.parseInt(priceStr);
@@ -135,63 +157,102 @@ public class AddMarketActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create JSON object
-            JSONObject requestData = new JSONObject();
-            try {
-                requestData.put("product_name", name);
-                requestData.put("price", price);
-                requestData.put("description", description);
-
-                // Optional fields - using empty string if not provided
-                requestData.put("post_type", postType.isEmpty() ? "" : postType);
-                requestData.put("color", color.isEmpty() ? "" : color);
-                requestData.put("old", old.isEmpty() ? "" : old);
-                requestData.put("seller_address", address.isEmpty() ? "" : address);
-                requestData.put("size", size.isEmpty() ? "" : size);
-                requestData.put("title", title.isEmpty() ? "" : title);
-                requestData.put("product_type", productType.isEmpty() ? "" : productType);
-                requestData.put("type", type.isEmpty() ? "" : type);
-                requestData.put("phone_number", phone.isEmpty() ? "" : phone);
-
-                // System fields
-                requestData.put("created_at", String.valueOf(System.currentTimeMillis()));
-                requestData.put("user_id", id); // Replace with actual user ID
-
-                // Handle images
-                JSONArray imageList = new JSONArray();
-                for (Uri imageUri : selectedImages) {
-                    imageList.put(imageUri.toString());
-                }
-                requestData.put("list_image", imageList);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(AddMarketActivity.this, "Error creating JSON", Toast.LENGTH_SHORT).show();
-            }
-
-            Log.d("ProductData", requestData.toString());
-
-
-            // TODO: Call your API here
-            // apiService.createMarketPost(requestData, new ApiService.DataCallback<String>() {
-            //     @Override
-            //     public void onSuccess(String response) {
-            //         runOnUiThread(() -> {
-            //             Toast.makeText(AddMarketActivity.this, "Product submitted successfully", Toast.LENGTH_SHORT).show();
-            //             finish();
-            //         });
-            //     }
-            //
-            //     @Override
-            //     public void onError() {
-            //         runOnUiThread(() -> {
-            //             Toast.makeText(AddMarketActivity.this, "Failed to submit product", Toast.LENGTH_SHORT).show();
-            //         });
-            //     }
-            // });
+            uploadImagesAndSubmit(name, postType, color, old, address, size, title, productType, type, phone, price, description, id);
 
             // Handle submit information here
             Toast.makeText(AddMarketActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+    private void uploadImagesAndSubmit(String name, String postType, String color, String old,
+                                       String address, String size, String title, String productType, String type,
+                                       String phone, int price, String description, String userId) {
+
+        List<String> imageUrls = new ArrayList<>();
+        AtomicInteger uploadedCount = new AtomicInteger(0);
+
+        // Hiển thị loading dialog
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading images...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        for (Uri imageUri : selectedImages) {
+            // Upload trực tiếp với tên file là thời gian hiện tại
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                    .child("images/" + System.currentTimeMillis() + ".jpg");
+
+            imageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Lấy download URL
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            imageUrls.add(uri.toString());
+
+                            // Log the download URL
+                            Log.d("ImageUpload", "Image uploaded successfully: " + uri.toString());
+
+                            // Kiểm tra nếu đã upload xong tất cả ảnh
+                            if (uploadedCount.incrementAndGet() == selectedImages.size()) {
+                                progressDialog.dismiss();
+                                submitDataToApi(name, postType, color, old, address, size,
+                                        title, productType, type, phone, price, description,
+                                        userId, imageUrls);
+                            }
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddMarketActivity.this,
+                                "Failed to upload image: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnProgressListener(snapshot -> {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.setMessage("Uploading: " + (int)progress + "%");
+                    });
+        }
+    }
+
+
+    private void submitDataToApi(String name, String postType, String color, String old,
+                                 String address, String size, String title, String productType,
+                                 String type, String phone, int price, String description,
+                                 String userId, List<String> imageUrls) {
+
+        PostMarketRequest request = new PostMarketRequest();
+        request.setProductName(name);
+        request.setPrice(price);
+        request.setDescription(description);
+        request.setPostType(postType.isEmpty() ? "" : postType);
+        request.setColor(color.isEmpty() ? "" : color);
+        request.setOld(old.isEmpty() ? "" : old);
+        request.setSellerAddress(address.isEmpty() ? "" : address);
+        request.setSize(size.isEmpty() ? "" : size);
+        request.setTitle(title.isEmpty() ? "" : title);
+        request.setProductType(productType.isEmpty() ? "" : productType);
+        request.setType(type.isEmpty() ? "" : type);
+        request.setPhoneNumber(phone.isEmpty() ? "" : phone);
+        request.setUserId(userId);
+        request.setListImage(imageUrls);
+
+        apiService.createMarketPost(request, new ApiService.DataCallback<String>() {
+            @Override
+            public void onSuccess(String response) {
+                runOnUiThread(() -> {
+                    Toast.makeText(AddMarketActivity.this,
+                            "Product submitted successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            }
+
+            @Override
+            public void onError() {
+                runOnUiThread(() -> {
+                    Toast.makeText(AddMarketActivity.this,
+                            "Failed to submit product", Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
 
@@ -281,9 +342,7 @@ public class AddMarketActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed(); // Quay lại trang trước đó
-//        myMarketViewModel.refreshMarketPosts();
-//        Log.d("tesssssss", "Refreshing market posts on back navigation");
+        onBackPressed();
         return true;
     }
 }

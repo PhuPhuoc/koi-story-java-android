@@ -151,62 +151,109 @@ public class ApiService {
         requestQueue.add(stringRequest);
     }
 
-//    public void createMarketPost(PostMarketRequest request, final DataCallback<String> callback) {
-//        String url = "http://api.koistory.site/api/v1/markets";
-//
-//        JSONObject jsonBody = new JSONObject();
-//        try {
-//            jsonBody.put("color", request.getColor());
-//            jsonBody.put("created_at", request.getCreated_at());
-//            jsonBody.put("description", request.getDescription());
-//            jsonBody.put("old", request.getOld());
-//            jsonBody.put("phone_number", request.getPhone_number());
-//            jsonBody.put("post_type", request.getPost_type());
-//            jsonBody.put("price", request.getPrice());
-//            jsonBody.put("product_name", request.getProduct_name());
-//            jsonBody.put("product_type", request.getProduct_type());
-//            jsonBody.put("seller_address", request.getSeller_address());
-//            jsonBody.put("size", request.getSize());
-//            jsonBody.put("title", request.getTitle());
-//            jsonBody.put("type", request.getType());
-//            jsonBody.put("user_id", request.getUser_id());
-//
-//            // Convert list_image to JSONArray
-//            JSONArray imageArray = new JSONArray();
-//            for (String image : request.getList_image()) {
-//                imageArray.put(image);
-//            }
-//            jsonBody.put("list_image", imageArray);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            callback.onError();
-//            return;
-//        }
-//
-//        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-//                response -> {
-//                    try {
-//                        // Assuming the response contains a success message or ID
-//                        String message = response.getString("message");
-//                        callback.onSuccess(message);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        callback.onError();
-//                    }
-//                },
-//                error -> {
-//                    // Log the error details
-//                    Log.e("ApiService", "Error: " + error.toString());
-//                    if (error.networkResponse != null) {
-//                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
-//                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
-//                    }
-//                    callback.onError();
-//                }) {
-//        };
-//        requestQueue.add(jsonRequest);
-//    }
+    public void createMarketPost(PostMarketRequest request, final DataCallback<String> callback) {
+        String url = "http://api.koistory.site/api/v1/markets";
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("color", request.getColor());
+            jsonBody.put("description", request.getDescription());
+            JSONArray imageArray = new JSONArray();
+            for (String image : request.getListImage()) {
+                imageArray.put(image);
+            }
+            jsonBody.put("list_image", imageArray);
+            jsonBody.put("old", request.getOld());
+            jsonBody.put("phone_number", request.getPhoneNumber());
+            jsonBody.put("post_type", request.getPostType());
+            jsonBody.put("price", request.getPrice());
+            jsonBody.put("product_name", request.getProductName());
+            jsonBody.put("product_type", request.getProductType());
+            jsonBody.put("seller_address", request.getSellerAddress());
+            jsonBody.put("size", request.getSize());
+            jsonBody.put("title", request.getTitle());
+            jsonBody.put("type", request.getType());
+            jsonBody.put("user_id", request.getId());
+
+            // Convert list_image to JSONArray
+            // Use JSONArray for the list_image
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onError();
+            return;
+        }
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                response -> {
+                    try {
+                        // Assuming the response contains a success message or ID
+                        String message = response.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                },
+                error -> {
+                    // Log the error details
+                    Log.e("ApiService", "Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
+                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError();
+                }) {
+        };
+        requestQueue.add(jsonRequest);
+    }
+
+    public void updateMarketPost(String id, PostMarketRequest request, final DataCallback<String> callback) {
+        String url = "http://api.koistory.site/api/v1/markets/" + id;
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("color", request.getColor());
+            jsonBody.put("description", request.getDescription());
+            jsonBody.put("old", request.getOld());
+            jsonBody.put("phone_number", request.getPhoneNumber());
+            jsonBody.put("post_type", request.getPostType());
+            jsonBody.put("price", request.getPrice());
+            jsonBody.put("product_name", request.getProductName());
+            jsonBody.put("product_type", request.getProductType());
+            jsonBody.put("seller_address", request.getSellerAddress());
+            jsonBody.put("size", request.getSize());
+            jsonBody.put("title", request.getTitle());
+            jsonBody.put("type", request.getType());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onError();
+            return;
+        }
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonBody,
+                response -> {
+                    try {
+                        String message = response.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                },
+                error -> {
+                    Log.e("ApiService", "Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
+                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError();
+                });
+
+        requestQueue.add(jsonRequest);
+    }
+
 
     public void getConsult(final DataConsultCallback<List<PostMarket>> callback) {
         String url = "http://api.koistory.site/api/v1/markets";
@@ -271,6 +318,7 @@ public class ApiService {
 
         void onError();
     }
+
     public interface DataMyMarketCallback<T> {
         void onSuccess(T data);
 
@@ -289,5 +337,6 @@ public class ApiService {
 
         void onError();
     }
+
 
 }

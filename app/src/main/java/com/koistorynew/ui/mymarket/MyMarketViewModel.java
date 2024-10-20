@@ -73,8 +73,6 @@ public class MyMarketViewModel extends ViewModel {
         apiService.deleteMarketPost(itemId, new ApiService.DataCallback<String>() {
             @Override
             public void onSuccess(String message) {
-                Log.d(TAG, "Mục đã được xóa thành công: " + message);
-                // Update the current list instead of fetching new data
                 List<MyMarket> currentList = arr_post_market.getValue();
                 if (currentList != null) {
                     List<MyMarket> updatedList = new ArrayList<>(currentList);
@@ -90,6 +88,7 @@ public class MyMarketViewModel extends ViewModel {
             }
         });
     }
+
 
     // Method to clear error
     public void clearError() {

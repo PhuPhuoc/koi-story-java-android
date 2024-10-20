@@ -1,39 +1,80 @@
 package com.koistorynew.ui.market;
 
+
+import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.koistorynew.ui.blog.model.PostBlog;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.koistorynew.ApiService;
 import com.koistorynew.ui.market.model.PostMarket;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MarketViewModel extends ViewModel {
-    private final MutableLiveData<List<PostMarket>> arr_post_market; // khai báo data sẽ sài trong blog fragment
+    private static final String TAG = "MarketViewModel";
 
-    public MarketViewModel() {
+    private final MutableLiveData<List<PostMarket>> arr_post_market;
+    private final MutableLiveData<Boolean> isLoading;
+    private final MutableLiveData<String> error;
+    private final ApiService apiService;
+
+    // Constructor
+    public MarketViewModel(Context context) {
         arr_post_market = new MutableLiveData<>();
-        arr_post_market.setValue(generateDummyData());
+        isLoading = new MutableLiveData<>(false);
+        error = new MutableLiveData<>();
+        // Instantiate ApiService using the provided RequestQueue
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        this.apiService = new ApiService(requestQueue);
+        fetchMarketPosts(); // Load initial data
     }
 
-    // lấy data sẽ sài trong blog fragment
-    public LiveData<List<PostMarket>> getDataFromBlogViewModel() {
+    // Getter methods for LiveData
+    public LiveData<List<PostMarket>> getMarketPostsLiveData() {
         return arr_post_market;
     }
 
-    private List<PostMarket> generateDummyData() {
-        List<PostMarket> dummyList = new ArrayList<>();
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
 
-        // Thêm các bài đăng mẫu vào danh sách
-        // dummyList.add(new PostBlog());
+    public LiveData<String> getError() {
+        return error;
+    }
 
-        dummyList.add(new PostMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"123456789231456789"));
-        dummyList.add(new PostMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"1234567891278212"));
-        dummyList.add(new PostMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"ahahaahahahhahaha"));
-        dummyList.add(new PostMarket("Pencilin", "https://pantravel.vn/wp-content/uploads/2023/11/phong-canh-thien-nhien-dep-nhat-the-gioi-1.jpg", 12,"for testing onlin"));
+    // Fetch market posts using ApiService
+    public void fetchMarketPosts() {
+        isLoading.setValue(true);
+        error.setValue(null);
 
-        return dummyList;
+        apiService.getMarketPosts(new ApiService.DataCallback<List<PostMarket>>() {
+            @Override
+            public void onSuccess(List<PostMarket> data) {
+                arr_post_market.setValue(data);
+                isLoading.setValue(false);
+                error.setValue(null);
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "Failed to fetch market posts.");
+                isLoading.setValue(false);
+                error.setValue("Failed to fetch market posts.");
+            }
+        });
+    }
+
+    public void refreshMarketPosts() {
+        fetchMarketPosts();
+    }
+
+    // Method to clear error
+    public void clearError() {
+        error.setValue(null);
     }
 }

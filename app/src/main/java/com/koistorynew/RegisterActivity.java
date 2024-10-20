@@ -2,7 +2,6 @@ package com.koistorynew;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -66,7 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("RegisterResponse", response.toString());
                         try {
                             // Assuming the response contains a "data" object
                             String message = response.getString("message");

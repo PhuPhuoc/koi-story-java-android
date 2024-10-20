@@ -83,6 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         android:textSize="16sp" />
+
                     <TextView
                         android:id="@+id/sellerAddress"
                         android:layout_width="match_parent"
@@ -90,13 +91,7 @@
                         android:layout_marginBottom="16dp"
                         android:textSize="16sp"
                         />
-                    <TextView
-                        android:id="@+id/createAt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:textSize="16sp"
-                        />
+
 
                     <Button
                         android:id="@+id/callButton"
@@ -105,8 +100,6 @@
                         android:layout_marginTop="8dp"
                         android:backgroundTint="#5CBD36"
                         android:text="Gọi điện" />
-
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

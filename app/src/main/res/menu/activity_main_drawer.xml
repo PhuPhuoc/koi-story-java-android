@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_consult" />
         <item
+            android:id="@+id/nav_mymarket"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/menu_mymarket" />
+        <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
@@ -28,6 +32,7 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_slideshow" />
+
 
     </group>
 </menu>

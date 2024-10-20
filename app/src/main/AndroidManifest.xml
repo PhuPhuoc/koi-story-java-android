@@ -31,6 +31,10 @@
         <activity android:name=".ui.blog.BlogCommentActivity" />
         <activity android:name=".ui.market.MarketDetailsActivity" />
         <activity android:name=".ui.market.MarketCommentActivity" />
+        <activity android:name=".ui.mymarket.MyMarketDetailActivity" />
+        <activity android:name=".ui.mymarket.MyMarketCommentActivity" />
+        <activity android:name=".ui.mymarket.AddMarketActivity" />
+        <activity android:name=".ui.consult.ConsultCommentActivity" />
 
 
 

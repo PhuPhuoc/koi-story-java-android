@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
-import com.koistorynew.ui.consult.adapter.ConsultCommentAdapter;
-import com.koistorynew.ui.consult.model.ConsultComment;
 import com.koistorynew.ui.myconsult.model.MyConsultComment;
 import com.squareup.picasso.Picasso;
 
@@ -36,11 +34,11 @@ public class MyConsultCommentAdapter extends RecyclerView.Adapter<MyConsultComme
     public void onBindViewHolder(@NonNull MyConsultCommentAdapter.CommentViewHolder holder, int position) {
         MyConsultComment comment = commentList.get(position);
         holder.userNameTextView.setText(comment.getUserName());
+        holder.commentDateTextView.setText(comment.getCommentDate());
         holder.commentTextView.setText(comment.getCommentText());
         Picasso.get().load(comment.getAvatarUrl())
                 .error(R.drawable.image_error)
                 .into(holder.avatarImageView);
-
     }
 
     @Override
@@ -49,12 +47,13 @@ public class MyConsultCommentAdapter extends RecyclerView.Adapter<MyConsultComme
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        TextView userNameTextView, commentTextView;
-        ImageView avatarImageView;  // Avatar ImageView
+        TextView userNameTextView, commentTextView, commentDateTextView;
+        ImageView avatarImageView;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             userNameTextView = itemView.findViewById(R.id.commentUserName);
+            commentDateTextView = itemView.findViewById(R.id.commentDate);
             commentTextView = itemView.findViewById(R.id.commentText);
             avatarImageView = itemView.findViewById(R.id.commentAvatar);
         }

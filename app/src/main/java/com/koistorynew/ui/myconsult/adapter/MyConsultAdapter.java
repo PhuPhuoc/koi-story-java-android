@@ -78,7 +78,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MyConsultCommentActivity.class);
-            intent.putExtra("ID", consult.getId());
+            intent.putExtra("POST_ID", consult.getId()); // Assuming you want to pass consult ID
             view.getContext().startActivity(intent);
         });
     }

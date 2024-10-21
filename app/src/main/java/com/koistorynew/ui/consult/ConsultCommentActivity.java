@@ -89,7 +89,6 @@ public class ConsultCommentActivity extends AppCompatActivity {
 
     }
 
-
     private void fetchComments(String postId) {
         commentList.clear();
         String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
@@ -126,7 +125,6 @@ public class ConsultCommentActivity extends AppCompatActivity {
         );
         requestQueue.add(jsonObjectRequest);
     }
-
 
     private void postComment(String productId, String userID, String content) {
         String url = "http://api.koistory.site/api/v1/post/" + productId + "/comment";

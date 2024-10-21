@@ -139,9 +139,7 @@ public class AddConsultActivity extends AppCompatActivity {
                 .addOnSuccessListener(taskSnapshot -> {
                     imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         progressDialog.dismiss();
-                        List<String> imageUrls = new ArrayList<>();
-                        imageUrls.add(uri.toString());
-                            submitDataToApi(title, post_type, content, userId, imageUrls.toString());
+                            submitDataToApi(title, post_type, content, userId, selectedImageUri.toString());
                     });
                 })
                 .addOnFailureListener(e -> {

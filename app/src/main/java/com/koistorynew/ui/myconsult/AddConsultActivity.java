@@ -76,7 +76,7 @@ public class AddConsultActivity extends AppCompatActivity {
         }).get(MyConsultViewModel.class);
 
         addTextContent = findViewById(R.id.add_content);
-        addTextTitle = findViewById(R.id.add_content);
+        addTextTitle = findViewById(R.id.add_title);
         addPostType = findViewById(R.id.add_post_type);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);

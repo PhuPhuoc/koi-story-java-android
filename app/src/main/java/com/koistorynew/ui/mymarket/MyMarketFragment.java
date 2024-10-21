@@ -74,7 +74,7 @@ public class MyMarketFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Giải phóng tài nguyên khi View bị hủy
+        binding = null;
     }
 
     private void showDeleteConfirmationDialog(String itemId) {

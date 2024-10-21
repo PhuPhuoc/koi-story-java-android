@@ -388,6 +388,46 @@ public class ApiService {
     }
 
 
+    public void editConsult(String id, AddConsult request, final DataCallback<String> callback) {
+        String url = "http://api.koistory.site/api/v1/consults/" + id;
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("content", request.getContent());
+            jsonBody.put("file_path", request.getFile_path());
+            jsonBody.put("post_type", request.getPost_type());
+            jsonBody.put("title", request.getTitle());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onError();
+            return;
+        }
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonBody,
+                response -> {
+                    try {
+                        String message = response.getString("message");
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                },
+                error -> {
+                    // Log the error details
+                    Log.e("ApiService", "Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
+                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError();
+                }) {
+        };
+        requestQueue.add(jsonRequest);
+    }
+
+
     // =======================================================================================
     public void getConsultPosts(final DataCallback<List<Consult>> callback) {
         String url = "http://api.koistory.site/api/v1/consults/";

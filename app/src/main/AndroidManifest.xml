@@ -39,6 +39,7 @@
         <activity android:name=".ui.consult.ConsultCommentActivity" />
         <activity android:name=".ui.myconsult.MyConsultCommentActivity" />
         <activity android:name=".ui.myconsult.AddConsultActivity" />
+        <activity android:name=".ui.myconsult.EditConsultActivity" />
 
     </application>
 

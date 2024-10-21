@@ -13,8 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
+import com.koistorynew.ui.myconsult.EditConsultActivity;
 import com.koistorynew.ui.myconsult.MyConsultCommentActivity;
 import com.koistorynew.ui.myconsult.model.MyConsult;
+import com.koistorynew.ui.mymarket.EditMarketActivity;
 import com.koistorynew.ui.mymarket.adapter.MyMarketAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -64,9 +66,19 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             onDeleteClickListener.onDeleteClick(consult.getId());
         });
 
+        holder.editButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditConsultActivity.class);
+            intent.putExtra("CONSULT_ID", consult.getId());
+            intent.putExtra("CONSULT_TITLE",consult.getTitle());
+            intent.putExtra("CONSULT_CONTENT",consult.getContent());
+            intent.putExtra("CONSULT_POST_TYPE",consult.getPost_type());
+            intent.putExtra("CONSULT_FILE_PATH",consult.getFile_path());
+            context.startActivity(intent);
+        });
+
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MyConsultCommentActivity.class);
-            intent.putExtra("CONSULT_ID", consult.getId()); // Assuming you want to pass consult ID
+            intent.putExtra("ID", consult.getId());
             view.getContext().startActivity(intent);
         });
     }
@@ -83,6 +95,8 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         public TextView descriptionTextView; // Add this
         public Button commentButton; // Add this
         public Button deleteButton;
+        public Button editButton;
+
 
         public ConsultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +106,8 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView); // Initialize this
             commentButton = itemView.findViewById(R.id.commentButton); // Initialize this
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            editButton = itemView.findViewById(R.id.editButton);
+
         }
     }
 

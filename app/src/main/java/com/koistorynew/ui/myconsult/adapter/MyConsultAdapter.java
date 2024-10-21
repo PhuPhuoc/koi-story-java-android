@@ -42,10 +42,12 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
     @Override
     public void onBindViewHolder(@NonNull MyConsultAdapter.ConsultViewHolder holder, int position) {
         MyConsult consult = consultList.get(position);
-        holder.nameTextView.setText(consult.getUserName());
-        holder.datePostedTextView.setText("Ngày đăng");
-        holder.descriptionTextView.setText(consult.getQuestion());
-        String imageUrl = consult.getImage();
+        holder.nameTextView.setText(consult.getUser_name());
+
+        holder.datePostedTextView.setText(consult.getCreated_at());
+
+        holder.descriptionTextView.setText(consult.getContent());
+        String imageUrl = consult.getFile_path();
 
         // Kiểm tra nếu URL không hợp lệ hoặc rỗng
         if (imageUrl != null && !imageUrl.isEmpty()) {

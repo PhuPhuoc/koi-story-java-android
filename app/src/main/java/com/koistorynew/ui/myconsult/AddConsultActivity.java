@@ -42,10 +42,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddConsultActivity extends AppCompatActivity {
-    private EditText editTextName, editTextDescription;
+    private EditText addTextContent, addTextTitle, addPostType;
     private Button uploadImageButton, submitButton;
     private LinearLayout imageContainer; // Container for selected images
-    private List<Uri> selectedImages;  // List of selected images
+    private Uri selectedImageUri;
+    // List of selected images
     private MyConsultViewModel myConsultViewModel;
     private ApiService apiService;
     private RequestQueue requestQueue;
@@ -74,114 +75,94 @@ public class AddConsultActivity extends AppCompatActivity {
             }
         }).get(MyConsultViewModel.class);
 
-        editTextDescription = findViewById(R.id.edit_text_description);
-        selectedImages = new ArrayList<>();
-        editTextName = findViewById(R.id.edit_text_name);
+        addTextContent = findViewById(R.id.add_content);
+        addTextTitle = findViewById(R.id.add_content);
+        addPostType = findViewById(R.id.add_post_type);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);
         imageContainer = findViewById(R.id.image_container);
 
         // Open intent to pick multiple images from the gallery
-        ActivityResultLauncher<Intent> pickImagesLauncher = registerForActivityResult(
+        ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        // Get the list of selected images
-                        if (result.getData().getClipData() != null) {
-                            int count = result.getData().getClipData().getItemCount();
-                            for (int i = 0; i < count; i++) {
-                                Uri imageUri = result.getData().getClipData().getItemAt(i).getUri();
-                                selectedImages.add(imageUri);  // Add to the list
-                                addImageToContainer(imageUri); // Display the image
-                            }
-                        } else if (result.getData().getData() != null) {
-                            Uri imageUri = result.getData().getData();
-                            selectedImages.add(imageUri);  // Add single image
-                            addImageToContainer(imageUri); // Display the image
+                        Uri imageUri = result.getData().getData();
+                        if (imageUri != null) {
+                            selectedImageUri = imageUri;
+                            addImageToContainer(imageUri); // Hiển thị ảnh
+                            Toast.makeText(AddConsultActivity.this, "Selected an image", Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(AddConsultActivity.this, "Selected " + selectedImages.size() + " images", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
+
 
         // Handle the "Upload Image" button click
         uploadImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // Allow multiple image selection
-            pickImagesLauncher.launch(Intent.createChooser(intent, "Select Pictures"));
+            pickImageLauncher.launch(Intent.createChooser(intent, "Select a Picture"));
         });
 
-        submitButton.setOnClickListener(v -> {
-            String name = editTextName.getText().toString().trim();
-            String description = editTextDescription.getText().toString().trim();
 
-            if (name.isEmpty() || description.isEmpty() || selectedImages.isEmpty()) {
-                Toast.makeText(AddConsultActivity.this, "Please fill in all required fields and upload images", Toast.LENGTH_SHORT).show();
+        submitButton.setOnClickListener(v -> {
+            String title = addTextTitle.getText().toString().trim();
+            String post_type = addPostType.getText().toString().trim();
+            String content = addTextContent.getText().toString().trim();
+
+            if (title.isEmpty() || post_type.isEmpty()  || content.isEmpty()) {
+                Toast.makeText(AddConsultActivity.this, "Please fill in all required fields and upload an image", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            uploadImagesAndSubmit(name, description, id);
-
-            // Handle submit information here
-            Toast.makeText(AddConsultActivity.this, "Product Submitted", Toast.LENGTH_SHORT).show();
+            uploadImageAndSubmit(title, post_type, content, id);
         });
     }
 
 
-    private void uploadImagesAndSubmit(String name, String description, String userId) {
-
-        List<String> imageUrls = new ArrayList<>();
-        AtomicInteger uploadedCount = new AtomicInteger(0);
+    private void uploadImageAndSubmit(String title, String post_type, String content, String userId) {
+        if (selectedImageUri == null) {
+            Toast.makeText(AddConsultActivity.this, "Please select an image", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Uploading images...");
+        progressDialog.setMessage("Uploading image...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        for (Uri imageUri : selectedImages) {
-            // Upload trực tiếp với tên file là thời gian hiện tại
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                    .child("images/" + System.currentTimeMillis() + ".jpg");
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                .child("images/" + System.currentTimeMillis() + ".jpg");
 
-            imageRef.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Lấy download URL
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            imageUrls.add(uri.toString());
-
-                            // Log the download URL
-                            Log.d("ImageUpload", "Image uploaded successfully: " + uri.toString());
-
-                            // Kiểm tra nếu đã upload xong tất cả ảnh
-                            if (uploadedCount.incrementAndGet() == selectedImages.size()) {
-                                progressDialog.dismiss();
-                                submitDataToApi(name, description,
-                                        userId, imageUrls);
-                            }
-                        });
-                    })
-                    .addOnFailureListener(e -> {
+        imageRef.putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         progressDialog.dismiss();
-                        Toast.makeText(AddConsultActivity.this,
-                                "Failed to upload image: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnProgressListener(snapshot -> {
-                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        progressDialog.setMessage("Uploading: " + (int) progress + "%");
+                        List<String> imageUrls = new ArrayList<>();
+                        imageUrls.add(uri.toString());
+                            submitDataToApi(title, post_type, content, userId, imageUrls.toString());
                     });
-        }
+                })
+                .addOnFailureListener(e -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(AddConsultActivity.this, "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                })
+                .addOnProgressListener(snapshot -> {
+                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                    progressDialog.setMessage("Uploading: " + (int) progress + "%");
+                });
     }
 
 
-    private void submitDataToApi(String name, String description,
-                                 String userId, List<String> imageUrls) {
+    private void submitDataToApi(String title, String post_type,String content,
+                                 String userId, String imageUrls) {
 
         AddConsult request = new AddConsult();
-        request.setProductName(name);
-        request.setDescription(description);
-        request.setListImage(imageUrls);
+        request.setTitle(title);
+        request.setPost_type(post_type);
+        request.setContent(content);
+        request.setFile_path(imageUrls);
 
         apiService.createConsult(request, new ApiService.DataCallback<String>() {
             @Override
@@ -233,9 +214,9 @@ public class AddConsultActivity extends AppCompatActivity {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Xóa ảnh khỏi container và danh sách URI
+                // Remove the image from the container and set the Uri to null
                 imageContainer.removeView(frameLayout);
-                selectedImages.remove(imageUri);
+                selectedImageUri = null; // Set the Uri to null
                 Toast.makeText(AddConsultActivity.this, "Image removed", Toast.LENGTH_SHORT).show();
             }
         });

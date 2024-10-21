@@ -9,14 +9,6 @@ public class AddConsult {
     private String title;
     private String user_id;
 
-    public AddConsult(String content, String file_path, String post_type, String title, String user_id) {
-        this.content = content;
-        this.file_path = file_path;
-        this.post_type = post_type;
-        this.title = title;
-        this.user_id = user_id;
-    }
-
     public String getContent() {
         return content;
     }

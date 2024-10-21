@@ -14,7 +14,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.koistorynew.ApiService;
 import com.koistorynew.R;
 import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.market.adapter.CommentAdapter;
@@ -109,10 +108,11 @@ public class MarketCommentActivity extends AppCompatActivity {
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject commentObject = dataArray.getJSONObject(i);
                             String author = commentObject.getString("username");
+                            String date = commentObject.getString("created_at");
                             String comment = commentObject.getString("content");
                             String avatarUrl = commentObject.getString("user_avatar_url");
 
-                            PostMarketComment postMarketComment = new PostMarketComment(author, comment, avatarUrl);
+                            PostMarketComment postMarketComment = new PostMarketComment(author,date, comment, avatarUrl);
                             commentList.add(postMarketComment);
                         }
                         commentAdapter.notifyDataSetChanged();

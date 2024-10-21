@@ -29,16 +29,33 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/commentUserName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="User Name"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
 
+            <!-- User Name -->
+            <TextView
+                android:id="@+id/commentUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="User Name"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Comment Date -->
+            <TextView
+                android:id="@+id/commentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2024-10-21"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Comment Text -->
         <TextView
             android:id="@+id/commentText"
             android:layout_width="wrap_content"
@@ -48,6 +65,5 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
     </LinearLayout>
-
 
 </LinearLayout>

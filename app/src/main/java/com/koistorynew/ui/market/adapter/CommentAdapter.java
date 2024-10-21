@@ -35,6 +35,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         PostMarketComment comment = commentList.get(position);
         holder.userNameTextView.setText(comment.getUserName());
+        holder.commentDateTextView.setText(comment.getCommentDate());
         holder.commentTextView.setText(comment.getCommentText());
         Picasso.get().load(comment.getAvatarUrl())
                 .error(R.drawable.image_error)
@@ -47,12 +48,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        TextView userNameTextView, commentTextView;
-        ImageView avatarImageView;  // Avatar ImageView
+        TextView userNameTextView, commentTextView, commentDateTextView;
+        ImageView avatarImageView;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             userNameTextView = itemView.findViewById(R.id.commentUserName);
+            commentDateTextView = itemView.findViewById(R.id.commentDate);
             commentTextView = itemView.findViewById(R.id.commentText);
             avatarImageView = itemView.findViewById(R.id.commentAvatar);
         }

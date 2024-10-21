@@ -52,16 +52,16 @@ public class ConsultViewModel extends ViewModel {
     // Method to generate dummy data
     private void generateDummyData() {
         List<Consult> dummyData = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            dummyData.add(new Consult(
-                    "id" + i,
-                    "https://example.com/image" + i + ".jpg", // Placeholder image URL
-                    "User " + i,
-                    "Title " + i,
-                    "This is a sample question " + i + "?",
-                    "https://example.com/avatar" + i + ".jpg" // Placeholder avatar URL
-            ));
-        }
+//        for (int i = 1; i <= 10; i++) {
+//            dummyData.add(new Consult(
+//                    "id" + i,
+//                    "https://example.com/image" + i + ".jpg", // Placeholder image URL
+//                    "User " + i,
+//                    "Title " + i,
+//                    "This is a sample question " + i + "?",
+//                    "https://example.com/avatar" + i + ".jpg" // Placeholder avatar URL
+//            ));
+//        }
         arr_post_market.setValue(dummyData); // Set the dummy data
     }
 

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.koistorynew.R;
 import com.koistorynew.ui.myconsult.MyConsultCommentActivity;
 import com.koistorynew.ui.myconsult.model.MyConsult;
+import com.koistorynew.ui.mymarket.adapter.MyMarketAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,9 +23,12 @@ import java.util.List;
 public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.ConsultViewHolder> {
     private List<MyConsult> consultList;
     private Context context;
+    private final MyConsultAdapter.OnDeleteClickListener onDeleteClickListener;
 
-    public MyConsultAdapter(List<MyConsult> consultList) {
+    public MyConsultAdapter(Context context,List<MyConsult> consultList, MyConsultAdapter.OnDeleteClickListener onDeleteClickListener) {
         this.consultList = consultList;
+        this.context = context;
+        this.onDeleteClickListener = onDeleteClickListener;
     }
 
     public void updateData(List<MyConsult> newConsultList) {
@@ -43,9 +47,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
     public void onBindViewHolder(@NonNull MyConsultAdapter.ConsultViewHolder holder, int position) {
         MyConsult consult = consultList.get(position);
         holder.nameTextView.setText(consult.getUser_name());
-
         holder.datePostedTextView.setText(consult.getCreated_at());
-
         holder.descriptionTextView.setText(consult.getContent());
         String imageUrl = consult.getFile_path();
 
@@ -57,6 +59,10 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
             holder.imageView.setImageResource(R.drawable.ic_add);
         }
+
+        holder.deleteButton.setOnClickListener(v -> {
+            onDeleteClickListener.onDeleteClick(consult.getId());
+        });
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MyConsultCommentActivity.class);
@@ -76,6 +82,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         public TextView datePostedTextView; // Add this
         public TextView descriptionTextView; // Add this
         public Button commentButton; // Add this
+        public Button deleteButton;
 
         public ConsultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +91,11 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             datePostedTextView = itemView.findViewById(R.id.datePostedTextView); // Initialize this
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView); // Initialize this
             commentButton = itemView.findViewById(R.id.commentButton); // Initialize this
+            deleteButton = itemView.findViewById(R.id.deleteButton);
         }
+    }
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(String itemId);
     }
 }

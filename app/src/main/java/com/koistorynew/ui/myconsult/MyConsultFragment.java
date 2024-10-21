@@ -17,12 +17,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.koistorynew.databinding.FragmentConsultBinding;
 import com.koistorynew.databinding.FragmentMyconsultBinding;
-import com.koistorynew.ui.consult.ConsultViewModel;
-import com.koistorynew.ui.consult.adapter.ConsultAdapter;
 import com.koistorynew.ui.myconsult.adapter.MyConsultAdapter;
-import com.koistorynew.ui.mymarket.AddMarketActivity;
+import com.koistorynew.ui.mymarket.adapter.MyMarketAdapter;
 
 public class MyConsultFragment extends Fragment {
     private FragmentMyconsultBinding binding;
@@ -47,10 +44,16 @@ public class MyConsultFragment extends Fragment {
 
         RecyclerView recyclerView = binding.recyclerViewMarket;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        myConsultViewModel.getConsult().observe(getViewLifecycleOwner(), postBlogs -> {
-            myConsultAdapter = new MyConsultAdapter(postBlogs);
-            recyclerView.setAdapter(myConsultAdapter);
+
+        myConsultViewModel.getConsult().observe(getViewLifecycleOwner(), postMarket -> {
+            if (myConsultAdapter == null) {
+                myConsultAdapter = new MyConsultAdapter(getContext(),postMarket, itemId -> showDeleteConfirmationDialog(itemId));
+                recyclerView.setAdapter(myConsultAdapter);
+            } else {
+                myConsultAdapter.updateData(postMarket);
+            }
         });
+
         FloatingActionButton fab = binding.fab;
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AddConsultActivity.class);
@@ -62,7 +65,7 @@ public class MyConsultFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        consultViewModel.fetchConsult();
+        myConsultViewModel.fetchMyConsultPosts();
     }
 
     @Override

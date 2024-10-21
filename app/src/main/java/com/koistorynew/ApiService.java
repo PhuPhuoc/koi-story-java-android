@@ -320,11 +320,10 @@ public class ApiService {
     }
 
     public void deleteConsultPost(String postId, final DataCallback<String> callback) {
-        String url = "http://api.koistory.site/api/v1/consult/" + postId;
+        String url = "http://api.koistory.site/api/v1/consults/" + postId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> {
-                    // Xử lý phản hồi khi xóa thành công
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         String message = jsonResponse.getString("message"); // Nếu API trả về thông điệp

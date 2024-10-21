@@ -78,7 +78,7 @@ public class MyConsultViewModel extends ViewModel {
     }
 
     public void deleteMarketItem(String itemId) {
-        apiService.deleteMarketPost(itemId, new ApiService.DataCallback<String>() {
+        apiService.deleteConsultPost(itemId, new ApiService.DataCallback<String>() {
             @Override
             public void onSuccess(String message) {
                 List<MyConsult> currentList = arr_post_market.getValue();

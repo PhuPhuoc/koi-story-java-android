@@ -42,10 +42,10 @@ public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultV
     @Override
     public void onBindViewHolder(@NonNull ConsultViewHolder holder, int position) {
         Consult consult = consultList.get(position);
-        holder.nameTextView.setText(consult.getUserName());
+        holder.nameTextView.setText(consult.getUser_name());
         holder.datePostedTextView.setText("Ngày đăng"); // Replace with actual date if available
-        holder.descriptionTextView.setText(consult.getQuestion());
-        Picasso.get().load(consult.getImage()).into(holder.imageView);
+//        holder.descriptionTextView.setText(consult.get());
+        Picasso.get().load(consult.getFile_path()).into(holder.imageView);
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);

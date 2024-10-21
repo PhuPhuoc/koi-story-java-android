@@ -52,7 +52,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         holder.datePostedTextView.setText(consult.getCreated_at());
         holder.descriptionTextView.setText(consult.getContent());
         String imageUrl = consult.getFile_path();
-
+        holder.title.setText(consult.getTitle());
         // Kiểm tra nếu URL không hợp lệ hoặc rỗng
         if (imageUrl != null && !imageUrl.isEmpty()) {
             // Tải hình ảnh bằng Picasso nếu URL hợp lệ
@@ -96,7 +96,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         public Button commentButton; // Add this
         public Button deleteButton;
         public Button editButton;
-
+        public TextView title;
 
         public ConsultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,7 +107,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             commentButton = itemView.findViewById(R.id.commentButton); // Initialize this
             deleteButton = itemView.findViewById(R.id.deleteButton);
             editButton = itemView.findViewById(R.id.editButton);
-
+            title = itemView.findViewById(R.id.consultTitle);
         }
     }
 

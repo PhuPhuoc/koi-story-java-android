@@ -1,15 +1,12 @@
 package com.koistorynew.ui.myconsult;
 
 import android.content.Intent;
-
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,15 +18,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.koistorynew.ApiService;
 import com.koistorynew.R;
-import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.myconsult.model.AddConsult;
 
 
 public class EditConsultActivity extends AppCompatActivity {
     private EditText editContent, editPostType, editTitle, editFilePath;
     private Button editButton;
-    private LinearLayout imageContainer; // Container for selected images
-    private Uri selectedImageUri;
     private ApiService apiService;
     private RequestQueue requestQueue;
     private MyConsultViewModel myConsultViewModel;
@@ -38,7 +32,6 @@ public class EditConsultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_consult);
-        String id = UserSessionManager.getInstance().getFbUid();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Consult");
@@ -73,6 +66,7 @@ public class EditConsultActivity extends AppCompatActivity {
             String title = editTitle.getText().toString().trim();
             String post_type = editPostType.getText().toString().trim();
             String content = editContent.getText().toString().trim();
+
             if (title.isEmpty() || post_type.isEmpty() || content.isEmpty()) {
                 Toast.makeText(EditConsultActivity.this, "Please fill in all required fields and upload an image", Toast.LENGTH_SHORT).show();
                 return;
@@ -90,7 +84,6 @@ public class EditConsultActivity extends AppCompatActivity {
         request.setPost_type(post_type);
         request.setContent(content);
         request.setFile_path(imageUrls);
-        Log.d("request", "submitDataToApi: " + request);
 
         apiService.editConsult(productId, request, new ApiService.DataCallback<String>() {
             @Override

@@ -42,10 +42,12 @@ public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultV
     @Override
     public void onBindViewHolder(@NonNull ConsultViewHolder holder, int position) {
         Consult consult = consultList.get(position);
-        holder.nameTextView.setText(consult.getUserName());
-        holder.datePostedTextView.setText("Ngày đăng"); // Replace with actual date if available
-        holder.descriptionTextView.setText(consult.getQuestion());
-        Picasso.get().load(consult.getImage()).into(holder.imageView);
+        holder.nameTextView.setText(consult.getUser_name());
+        holder.datePostedTextView.setText(consult.getCreated_at());
+        holder.title.setText(consult.getTitle());
+        Picasso.get().load(consult.getUser_avatar()).into(holder.avatar);
+        holder.descriptionTextView.setText(consult.getContent());
+        Picasso.get().load(consult.getFile_path()).into(holder.imageView);
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);
@@ -61,16 +63,20 @@ public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultV
 
     public static class ConsultViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
+        public ImageView avatar;
         public TextView nameTextView;
-        public TextView datePostedTextView; // Add this
-        public TextView descriptionTextView; // Add this
+        public TextView datePostedTextView;
+        public TextView descriptionTextView;
+        public TextView title;
         public Button commentButton; // Add this
 
         public ConsultViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
+            avatar = itemView.findViewById(R.id.avatarImageView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
-            datePostedTextView = itemView.findViewById(R.id.datePostedTextView); // Initialize this
+            datePostedTextView = itemView.findViewById(R.id.datePostedTextView);
+            title = itemView.findViewById(R.id.consultTitle);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView); // Initialize this
             commentButton = itemView.findViewById(R.id.commentButton); // Initialize this
         }

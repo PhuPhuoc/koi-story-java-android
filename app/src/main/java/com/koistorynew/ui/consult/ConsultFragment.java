@@ -59,6 +59,6 @@ public class ConsultFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        consultViewModel.fetchConsult();
+        consultViewModel.fetchConsultPosts();
     }
 }

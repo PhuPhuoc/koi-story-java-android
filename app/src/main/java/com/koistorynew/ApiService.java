@@ -378,18 +378,16 @@ public class ApiService {
     }
 
     public void createConsult(AddConsult request, final DataCallback<String> callback) {
-        String url = "http://api.koistory.site/api/v1/markets";
+        String url = "http://api.koistory.site/api/v1/consults";
+        String user_id = UserSessionManager.getInstance().getFbUid();
 
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("description", request.getDescription());
-            JSONArray imageArray = new JSONArray();
-            for (String image : request.getListImage()) {
-                imageArray.put(image);
-            }
-            jsonBody.put("list_image", imageArray);
-            jsonBody.put("product_name", request.getProductName());
-            jsonBody.put("user_id", request.getId());
+            jsonBody.put("content", request.getContent());
+            jsonBody.put("file_path", request.getFile_path());
+            jsonBody.put("post_type", request.getPost_type());
+            jsonBody.put("title", request.getTitle());
+            jsonBody.put("user_id", user_id);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -419,6 +417,8 @@ public class ApiService {
         };
         requestQueue.add(jsonRequest);
     }
+
+
 
 
     public interface DataCallback<T> {

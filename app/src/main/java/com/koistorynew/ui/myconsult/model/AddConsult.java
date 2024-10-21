@@ -3,49 +3,57 @@ package com.koistorynew.ui.myconsult.model;
 import java.util.List;
 
 public class AddConsult {
-    private String id;
-    private String userId;
-    private String productName;
-    private String description;
-    private List<String> listImage;
+    private String content;
+    private String file_path;
+    private String post_type;
+    private String title;
+    private String user_id;
 
-    public String getId() {
-        return id;
+    public AddConsult(String content, String file_path, String post_type, String title, String user_id) {
+        this.content = content;
+        this.file_path = file_path;
+        this.post_type = post_type;
+        this.title = title;
+        this.user_id = user_id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getContent() {
+        return content;
     }
 
-    public String getProductName() {
-        return productName;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getDescription() {
-        return description;
+    public String getFile_path() {
+        return file_path;
     }
 
-    public List<String> getListImage() {
-        return listImage;
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getPost_type() {
+        return post_type;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setPost_type(String post_type) {
+        this.post_type = post_type;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setListImage(List<String> listImage) {
-        this.listImage = listImage;
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

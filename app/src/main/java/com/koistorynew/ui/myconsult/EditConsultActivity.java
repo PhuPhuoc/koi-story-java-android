@@ -1,4 +1,7 @@
 package com.koistorynew.ui.myconsult;
 
-public class EditConsultActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class EditConsultActivity extends AppCompatActivity {
+
 }

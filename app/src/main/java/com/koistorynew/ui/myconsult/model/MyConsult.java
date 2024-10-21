@@ -2,42 +2,60 @@ package com.koistorynew.ui.myconsult.model;
 
 public class MyConsult {
     private String id;
-    private String userName;
-    private String image;
+    private String user_id;
+    private String user_name;
+    private String user_avatar;
+    private String post_type;
     private String title;
-    private String question;
-    private String avatar;
+    private String content;
+    private String file_path;
+    private String created_at;
 
-    public MyConsult(String id, String image, String userName, String title, String question, String avatar) {
+    public MyConsult(String id, String user_id, String user_name, String user_avatar, String post_type, String title, String content, String file_path, String created_at) {
         this.id = id;
-        this.image = image;
-        this.userName = userName;
+        this.user_id = user_id;
+        this.user_name = user_name;
+        this.user_avatar = user_avatar;
+        this.post_type = post_type;
         this.title = title;
-        this.question = question;
-        this.avatar = avatar;
+        this.content = content;
+        this.file_path = file_path;
+        this.created_at = created_at;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public String getImage() {
-        return image;
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public String getUser_avatar() {
+        return user_avatar;
+    }
+
+    public String getPost_type() {
+        return post_type;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getContent() {
+        return content;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public String getCreated_at() {
+        return created_at;
     }
 }

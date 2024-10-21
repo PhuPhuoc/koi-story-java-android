@@ -9,6 +9,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.koistorynew.ui.market.model.PostMarket;
 import com.koistorynew.ui.market.model.PostMarketDetail;
 import com.koistorynew.ui.myconsult.model.AddConsult;
+import com.koistorynew.ui.myconsult.model.MyConsult;
 import com.koistorynew.ui.mymarket.model.MyMarket;
 import com.koistorynew.ui.mymarket.model.PostMarketRequest;
 
@@ -73,6 +74,40 @@ public class ApiService {
                             String id = postObject.getString("post_id");
 
                             posts.add(new MyMarket(id, name, image, price, null));
+                        }
+                        callback.onSuccess(posts);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                }, error -> callback.onError());
+
+        requestQueue.add(stringRequest);
+    }
+
+    public void getMyConsultPosts(String userId, final DataMyMarketCallback<List<MyConsult>> callback) {
+        String url = "http://api.koistory.site/api/v1/consults/my/" + userId;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<MyConsult> posts = new ArrayList<>();
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        JSONArray jsonArray = jsonResponse.getJSONArray("data");
+                        Log.d("ApiService", "Fetched data: " + response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject postObject = jsonArray.getJSONObject(i);
+                            String id = postObject.getString("id");
+                            String user_id = postObject.getString("user_id");
+                            String user_name = postObject.getString("user_name");
+                            String user_avatar = postObject.getString("user_avatar");
+                            String post_type = postObject.getString("post_type");
+                            String title = postObject.getString("title");
+                            String content = postObject.getString("content");
+                            String file_path = postObject.getString("file_path");
+                            String created_at = postObject.getString("created_at");
+
+                            posts.add(new MyConsult(id, user_id, user_name, user_avatar, post_type, title, content, file_path, created_at));
                         }
                         callback.onSuccess(posts);
                     } catch (JSONException e) {
@@ -288,6 +323,34 @@ public class ApiService {
 
     public void deleteMarketPost(String postId, final DataCallback<String> callback) {
         String url = "http://api.koistory.site/api/v1/markets/" + postId;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+                response -> {
+                    // Xử lý phản hồi khi xóa thành công
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String message = jsonResponse.getString("message"); // Nếu API trả về thông điệp
+                        callback.onSuccess(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                },
+                error -> {
+                    // Xử lý lỗi
+                    Log.e("ApiService", "Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("ApiService", "Error Code: " + error.networkResponse.statusCode);
+                        Log.e("ApiService", "Error Data: " + new String(error.networkResponse.data));
+                    }
+                    callback.onError();
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
+    public void deleteConsultPost(String postId, final DataCallback<String> callback) {
+        String url = "http://api.koistory.site/api/v1/consult/" + postId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> {

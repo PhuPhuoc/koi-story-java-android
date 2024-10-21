@@ -67,7 +67,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:textSize="24sp"
+                        android:textSize="30sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <TextView
@@ -75,6 +76,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
+                        android:textColor="@color/black"
+
                         android:textSize="18sp" />
 
                     <TextView
@@ -82,12 +85,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp" />
                     <TextView
                         android:id="@+id/sellerAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp"
                         />
                     <TextView
@@ -95,6 +102,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp"
                         />
 
@@ -130,48 +139,63 @@
                         android:id="@+id/colorTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/sizeTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/ageTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/typeTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/typeOtherTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/originTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/sizeOtherTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/usageTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+
                         android:visibility="gone" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -190,7 +214,7 @@
 
                 <Button
                     android:id="@+id/seeMoreButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Xem bình luận" />
             </LinearLayout>

@@ -1,6 +1,7 @@
 package com.koistorynew.ui.myconsult;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,14 +10,16 @@ import androidx.lifecycle.ViewModel;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.koistorynew.ApiService;
+import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.consult.model.Consult;
 import com.koistorynew.ui.myconsult.model.MyConsult;
+import com.koistorynew.ui.mymarket.model.MyMarket;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyConsultViewModel extends ViewModel {
-    private static final String TAG = "ConsultViewModel";
+    private static final String TAG = "MyConsultViewModel";
 
     private final MutableLiveData<List<MyConsult>> arr_post_market;
     private final MutableLiveData<Boolean> isLoading;
@@ -32,7 +35,7 @@ public class MyConsultViewModel extends ViewModel {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         this.apiService = new ApiService(requestQueue);
 
-        generateDummyData(); // Load dummy data for testing
+        fetchMyConsultPosts(); // Load dummy data for testing
     }
 
     // Getter methods for LiveData
@@ -49,19 +52,49 @@ public class MyConsultViewModel extends ViewModel {
     }
 
     // Method to generate dummy data
-    private void generateDummyData() {
-        List<MyConsult> dummyData = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            dummyData.add(new MyConsult(
-                    "id" + i,
-                    "https://example.com/image" + i + ".jpg", // Placeholder image URL
-                    "User " + i,
-                    "Title " + i,
-                    "This is a sample question " + i + "?",
-                    "https://example.com/avatar" + i + ".jpg" // Placeholder avatar URL
-            ));
-        }
-        arr_post_market.setValue(dummyData); // Set the dummy data
+    public void fetchMyConsultPosts() {
+        isLoading.setValue(true);
+        error.setValue(null);
+        String userId = UserSessionManager.getInstance().getFbUid();
+        apiService.getMyConsultPosts(userId, new ApiService.DataMyMarketCallback<List<MyConsult>>() {
+            @Override
+            public void onSuccess(List<MyConsult> data) {
+                arr_post_market.setValue(data);
+                isLoading.setValue(false);
+                error.setValue(null);
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "Failed to fetch market posts.");
+                isLoading.setValue(false);
+                error.setValue("Failed to fetch market posts.");
+            }
+        });
+    }
+
+    public void refreshConsultPosts() {
+        fetchMyConsultPosts();
+    }
+
+    public void deleteMarketItem(String itemId) {
+        apiService.deleteMarketPost(itemId, new ApiService.DataCallback<String>() {
+            @Override
+            public void onSuccess(String message) {
+                List<MyConsult> currentList = arr_post_market.getValue();
+                if (currentList != null) {
+                    List<MyConsult> updatedList = new ArrayList<>(currentList);
+                    updatedList.removeIf(item -> item.getId().equals(itemId));
+                    arr_post_market.setValue(updatedList);
+                }
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG, "Failed to delete market item.");
+                error.setValue("Failed to delete market item");
+            }
+        });
     }
 
     // Method to clear error

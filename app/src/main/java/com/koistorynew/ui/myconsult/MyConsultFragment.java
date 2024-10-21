@@ -1,10 +1,13 @@
 package com.koistorynew.ui.myconsult;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -44,15 +47,6 @@ public class MyConsultFragment extends Fragment {
 
         RecyclerView recyclerView = binding.recyclerViewMarket;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-
-//        consultViewModel.getMarketPostsLiveData().observe(getViewLifecycleOwner(), postMarket -> {
-//            if (consultAdapter == null) {
-//                consultAdapter = new ConsultAdapter(postMarket);
-//                recyclerView.setAdapter(consultAdapter);
-//            } else {
-//                consultAdapter.updateData(postMarket);
-//            }
-//        });
         myConsultViewModel.getConsult().observe(getViewLifecycleOwner(), postBlogs -> {
             myConsultAdapter = new MyConsultAdapter(postBlogs);
             recyclerView.setAdapter(myConsultAdapter);
@@ -69,5 +63,28 @@ public class MyConsultFragment extends Fragment {
     public void onResume() {
         super.onResume();
 //        consultViewModel.fetchConsult();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    private void showDeleteConfirmationDialog(String itemId) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa mục này?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    // Log ID của mục
+                    Log.d("MyMarketFragment", "Đã xóa mục có ID: " + itemId);
+
+                    Toast.makeText(getContext(), "Mục đã được xóa", Toast.LENGTH_SHORT).show();
+                    onResume();
+                    myConsultViewModel.deleteMarketItem(itemId);
+                    myConsultViewModel.refreshConsultPosts();
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 }

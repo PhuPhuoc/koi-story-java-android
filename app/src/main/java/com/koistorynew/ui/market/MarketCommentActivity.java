@@ -88,11 +88,6 @@ public class MarketCommentActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
 
     private void fetchComments(String postId) {
         commentList.clear();
@@ -130,6 +125,7 @@ public class MarketCommentActivity extends AppCompatActivity {
         );
         requestQueue.add(jsonObjectRequest);
     }
+
 
     private void postComment(String productId, String userID, String content) {
         String url = "http://api.koistory.site/api/v1/post/" + productId + "/comment";
@@ -186,4 +182,12 @@ public class MarketCommentActivity extends AppCompatActivity {
         );
         requestQueue.add(jsonObjectRequest);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
 }

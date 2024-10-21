@@ -79,7 +79,7 @@ public class MyMarketDetailActivity extends AppCompatActivity {
         Button seeMoreButton = findViewById(R.id.seeMoreButton);
         seeMoreButton.setOnClickListener(v -> {
             Intent commentIntent = new Intent(MyMarketDetailActivity.this, MyMarketCommentActivity.class);
-            commentIntent.putExtra("PRODUCT_ID", productId);
+            commentIntent.putExtra("POST_ID", productId);
             startActivity(commentIntent);
         });
 

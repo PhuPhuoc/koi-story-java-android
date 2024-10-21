@@ -389,9 +389,8 @@ public class ApiService {
 
 
     // =======================================================================================
-
-    public void getConsultPosts(String userId, final DataMyMarketCallback<List<Consult>> callback) {
-        String url = "http://api.koistory.site/api/v1/consults/" + userId;
+    public void getConsultPosts(final DataCallback<List<Consult>> callback) {
+        String url = "http://api.koistory.site/api/v1/consults/";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     List<Consult> posts = new ArrayList<>();
@@ -420,7 +419,6 @@ public class ApiService {
                 }, error -> callback.onError());
         requestQueue.add(stringRequest);
     }
-
     // =======================================================================================
 
 

@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.koistorynew.ui.consult.model.Consult;
 import com.koistorynew.ui.market.model.PostMarket;
 import com.koistorynew.ui.market.model.PostMarketDetail;
 import com.koistorynew.ui.myconsult.model.AddConsult;
@@ -290,37 +291,6 @@ public class ApiService {
         requestQueue.add(jsonRequest);
     }
 
-
-    public void getConsult(final DataConsultCallback<List<PostMarket>> callback) {
-        String url = "http://api.koistory.site/api/v1/markets";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    List<PostMarket> posts = new ArrayList<>();
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        JSONArray jsonArray = jsonResponse.getJSONArray("data");
-                        Log.d("ApiService", "Fetched data: " + response);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject postObject = jsonArray.getJSONObject(i);
-                            String name = postObject.getString("product_name");
-                            String image = postObject.getString("file_path");
-                            int price = postObject.getInt("price");
-                            String id = postObject.getString("post_id");
-
-                            posts.add(new PostMarket(id, name, image, price, null));
-                        }
-                        callback.onSuccess(posts);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        callback.onError();
-                    }
-                }, error -> callback.onError());
-
-        requestQueue.add(stringRequest);
-    }
-
-
     public void deleteMarketPost(String postId, final DataCallback<String> callback) {
         String url = "http://api.koistory.site/api/v1/markets/" + postId;
 
@@ -419,6 +389,40 @@ public class ApiService {
     }
 
 
+    // =======================================================================================
+
+    public void getConsultPosts(String userId, final DataMyMarketCallback<List<Consult>> callback) {
+        String url = "http://api.koistory.site/api/v1/consults/" + userId;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<Consult> posts = new ArrayList<>();
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        JSONArray jsonArray = jsonResponse.getJSONArray("data");
+                        Log.d("ApiService", "Fetched data: " + response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject postObject = jsonArray.getJSONObject(i);
+                            String id = postObject.getString("id");
+                            String user_id = postObject.getString("user_id");
+                            String user_name = postObject.getString("user_name");
+                            String user_avatar = postObject.getString("user_avatar");
+                            String post_type = postObject.getString("post_type");
+                            String title = postObject.getString("title");
+                            String content = postObject.getString("content");
+                            String file_path = postObject.getString("file_path");
+                            String created_at = postObject.getString("created_at");
+                            posts.add(new Consult(id, user_id, user_name, user_avatar, post_type, title, content, file_path, created_at));
+                        }
+                        callback.onSuccess(posts);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError();
+                    }
+                }, error -> callback.onError());
+        requestQueue.add(stringRequest);
+    }
+
+    // =======================================================================================
 
 
     public interface DataCallback<T> {

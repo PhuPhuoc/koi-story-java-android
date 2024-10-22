@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,13 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Koistorynew"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Koistorynew.NoActionBar"
-            >
+            android:theme="@style/Theme.Koistorynew.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +33,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity" android:theme="@style/Theme.Koistorynew.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Koistorynew.NoActionBar" />
         <activity android:name=".ui.blog.BlogDetailsActivity" />
         <activity android:name=".ui.blog.BlogCommentActivity" />
         <activity android:name=".ui.market.MarketDetailsActivity" />
@@ -41,6 +50,8 @@
         <activity android:name=".ui.myconsult.AddConsultActivity" />
         <activity android:name=".ui.myconsult.EditConsultActivity" />
         <activity android:name=".ui.myconsult.EditImagesConsultActivity" />
+        <activity android:name=".CameraActivity" />
+
 
     </application>
 

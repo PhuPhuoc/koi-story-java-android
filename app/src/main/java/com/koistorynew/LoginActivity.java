@@ -99,12 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                         // Log lỗi
                         if (error.networkResponse != null) {
                             try {
-                                // Chuyển đổi phản hồi thành chuỗi
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
-
-                                // Hiển thị thông báo lỗi
                                 Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 e.printStackTrace();

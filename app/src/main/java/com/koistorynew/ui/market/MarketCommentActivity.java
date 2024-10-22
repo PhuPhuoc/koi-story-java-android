@@ -52,7 +52,6 @@ public class MarketCommentActivity extends AppCompatActivity {
         ImageButton sendCommentButton = findViewById(R.id.sendCommentButton);
         commentRecyclerView = findViewById(R.id.commentRecyclerView);
 
-        // Initialize other variables
         Intent intent = getIntent();
         productId = intent.getStringExtra("POST_ID");
         requestQueue = Volley.newRequestQueue(this);
@@ -91,6 +90,7 @@ public class MarketCommentActivity extends AppCompatActivity {
 
     private void fetchComments(String postId) {
         commentList.clear();
+        commentRecyclerView.removeAllViews();
         String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -107,7 +107,7 @@ public class MarketCommentActivity extends AppCompatActivity {
                             String comment = commentObject.getString("content");
                             String avatarUrl = commentObject.getString("user_avatar_url");
 
-                            PostMarketComment postMarketComment = new PostMarketComment(author,date, comment, avatarUrl);
+                            PostMarketComment postMarketComment = new PostMarketComment(author, date, comment, avatarUrl);
                             commentList.add(postMarketComment);
                         }
                         commentAdapter.notifyDataSetChanged();

@@ -105,10 +105,11 @@ public class ApiService {
                             String post_type = postObject.getString("post_type");
                             String title = postObject.getString("title");
                             String content = postObject.getString("content");
+                            String image_id = postObject.getString("image_id");
                             String file_path = postObject.getString("file_path");
                             String created_at = postObject.getString("created_at");
 
-                            posts.add(new MyConsult(id, user_id, user_name, user_avatar, post_type, title, content, file_path, created_at));
+                            posts.add(new MyConsult(id, user_id, user_name, user_avatar, post_type, title, content,image_id, file_path, created_at));
                         }
                         callback.onSuccess(posts);
                     } catch (JSONException e) {
@@ -127,55 +128,47 @@ public class ApiService {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
-
                         JSONObject jsonResponse = new JSONObject(response);
-                        JSONObject postObject = jsonResponse.getJSONObject("data");
+                        JSONObject postObject = jsonResponse.optJSONObject("data");
 
-                        String id = postObject.getString("id");
-                        String userId = postObject.getString("user_id");
-                        String postType = postObject.getString("post_type");
-                        String createAt = postObject.getString("created_at");
-                        String title = postObject.getString("title");
-                        String productName = postObject.getString("product_name");
-                        String productType = postObject.getString("product_type");
-                        double price = postObject.getDouble("price");
-                        String sellerAddress = postObject.getString("seller_address");
-                        String phoneNumber = postObject.getString("phone_number");
-                        String description = postObject.getString("description");
-                        String color = postObject.getString("color");
-                        String size = postObject.getString("size");
-                        String old = postObject.getString("old");
-                        String type = postObject.getString("type");
+                        // Check if postObject is null
+                        if (postObject == null) {
+                            callback.onError();
+                            return;
+                        }
+
+                        // Extract fields from postObject
+                        PostMarketDetail postMarketDetail = new PostMarketDetail();
+                        postMarketDetail.setId(postObject.optString("id"));
+                        postMarketDetail.setUserId(postObject.optString("user_id"));
+                        postMarketDetail.setPostType(postObject.optString("post_type"));
+                        postMarketDetail.setCreatedAt(postObject.optString("created_at"));
+                        postMarketDetail.setTitle(postObject.optString("title"));
+                        postMarketDetail.setProductName(postObject.optString("product_name"));
+                        postMarketDetail.setProductType(postObject.optString("product_type"));
+                        postMarketDetail.setPrice(postObject.optDouble("price", 0.0));
+                        postMarketDetail.setSellerAddress(postObject.optString("seller_address"));
+                        postMarketDetail.setPhoneNumber(postObject.optString("phone_number"));
+                        postMarketDetail.setDescription(postObject.optString("description"));
+                        postMarketDetail.setColor(postObject.optString("color"));
+                        postMarketDetail.setSize(postObject.optString("size"));
+                        postMarketDetail.setOld(postObject.optString("old"));
+                        postMarketDetail.setType(postObject.optString("type"));
 
                         // Parse images
                         List<PostMarketDetail.ImageData> imageDataList = new ArrayList<>();
-                        JSONArray imageArray = postObject.getJSONArray("ListImage");
-                        for (int i = 0; i < imageArray.length(); i++) {
-                            JSONObject imageObject = imageArray.getJSONObject(i);
-                            String filePath = imageObject.getString("file_path");
-                            int imageOrder = imageObject.getInt("image_order");
-                            PostMarketDetail.ImageData imageData = new PostMarketDetail.ImageData();
-                            imageData.setFilePath(filePath);
-                            imageData.setImageOrder(imageOrder);
-                            imageDataList.add(imageData);
+                        JSONArray imageArray = postObject.optJSONArray("ListImage");
+                        if (imageArray != null) {
+                            for (int i = 0; i < imageArray.length(); i++) {
+                                JSONObject imageObject = imageArray.optJSONObject(i);
+                                if (imageObject != null) {
+                                    PostMarketDetail.ImageData imageData = new PostMarketDetail.ImageData();
+                                    imageData.setFilePath(imageObject.optString("file_path"));
+                                    imageData.setImageOrder(imageObject.optInt("image_order", 0));
+                                    imageDataList.add(imageData);
+                                }
+                            }
                         }
-
-                        PostMarketDetail postMarketDetail = new PostMarketDetail();
-                        postMarketDetail.setId(id);
-                        postMarketDetail.setUserId(userId);
-                        postMarketDetail.setPostType(postType);
-                        postMarketDetail.setCreatedAt(createAt);
-                        postMarketDetail.setTitle(title);
-                        postMarketDetail.setProductName(productName);
-                        postMarketDetail.setProductType(productType);
-                        postMarketDetail.setPrice(price);
-                        postMarketDetail.setSellerAddress(sellerAddress);
-                        postMarketDetail.setPhoneNumber(phoneNumber);
-                        postMarketDetail.setDescription(description);
-                        postMarketDetail.setColor(color);
-                        postMarketDetail.setSize(size);
-                        postMarketDetail.setOld(old);
-                        postMarketDetail.setType(type);
                         postMarketDetail.setListImage(imageDataList);
 
                         callback.onSuccess(postMarketDetail);
@@ -183,10 +176,14 @@ public class ApiService {
                         e.printStackTrace();
                         callback.onError();
                     }
-                }, error -> callback.onError());
+                }, error -> {
+            Log.e("ApiService", "Error fetching market post detail: " + error.toString());
+            callback.onError();
+        });
 
         requestQueue.add(stringRequest);
     }
+
 
     public void createMarketPost(PostMarketRequest request, final DataCallback<String> callback) {
         String url = "http://api.koistory.site/api/v1/markets";

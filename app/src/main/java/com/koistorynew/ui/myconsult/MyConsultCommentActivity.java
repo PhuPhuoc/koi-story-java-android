@@ -33,7 +33,6 @@ public class MyConsultCommentActivity extends AppCompatActivity {
     private RecyclerView commentRecyclerView;
     private MyConsultCommentAdapter myConsultCommentAdapter;
     private List<MyConsultComment> commentList;
-
     private RequestQueue requestQueue;
     private TextView commentEditText;
     private String post_id;
@@ -94,6 +93,7 @@ public class MyConsultCommentActivity extends AppCompatActivity {
     }
 
     private void fetchComments(String postId) {
+        commentRecyclerView.removeAllViews();
         commentList.clear();
         String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
 
@@ -111,7 +111,7 @@ public class MyConsultCommentActivity extends AppCompatActivity {
                             String comment = commentObject.getString("content");
                             String avatarUrl = commentObject.getString("user_avatar_url");
 
-                            MyConsultComment myConsultComment = new MyConsultComment(author,date, comment, avatarUrl);
+                            MyConsultComment myConsultComment = new MyConsultComment(author, date, comment, avatarUrl);
                             commentList.add(myConsultComment);
                         }
                         myConsultCommentAdapter.notifyDataSetChanged();
@@ -147,7 +147,6 @@ public class MyConsultCommentActivity extends AppCompatActivity {
                 commentData,
                 response -> {
                     Log.d("API_RESPONSE", "Comment posted successfully: " + response.toString());
-                    // Fetch comments again after successful posting
                     fetchComments(productId);
                 },
                 error -> {
@@ -185,8 +184,6 @@ public class MyConsultCommentActivity extends AppCompatActivity {
         );
         requestQueue.add(jsonObjectRequest);
     }
-
-
 
 
     @Override

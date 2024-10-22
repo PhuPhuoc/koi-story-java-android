@@ -89,6 +89,7 @@ public class MyMarketCommentActivity extends AppCompatActivity {
 
     private void fetchComments(String postId) {
         commentList.clear();
+        commentRecyclerView.removeAllViews();
         String url = "http://api.koistory.site/api/v1/post/" + postId + "/comment";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(

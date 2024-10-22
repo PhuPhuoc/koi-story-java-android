@@ -139,7 +139,7 @@ public class AddConsultActivity extends AppCompatActivity {
                 .addOnSuccessListener(taskSnapshot -> {
                     imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         progressDialog.dismiss();
-                            submitDataToApi(title, post_type, content, userId, selectedImageUri.toString());
+                            submitDataToApi(title, post_type, content, userId, uri.toString());
                     });
                 })
                 .addOnFailureListener(e -> {

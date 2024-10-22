@@ -25,8 +25,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="No images uploaded. Tap the button to add images."
-                    android:visibility="gone" />
+                    android:text="Please delete the existing image before uploading a new one."
+                    android:visibility="gone" /> <!-- Thêm hint nhỏ -->
 
             </LinearLayout>
         </ScrollView>

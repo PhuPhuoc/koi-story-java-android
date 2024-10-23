@@ -137,12 +137,12 @@ public class MarketDetailsActivity extends AppCompatActivity {
 
         nameTextView.setText(detail.getProductName());
         descriptionTextView.setText(detail.getDescription());
-        priceTextView.setText(String.format(Locale.getDefault(), "₫%,.0f", detail.getPrice()));
-        colorTextView.setText(String.format("Color: %s", detail.getColor()));
-        sizeTextView.setText(String.format("Size: %s", detail.getSize()));
-        ageTextView.setText(String.format("Age: %s", detail.getOld()));
-        typeTextView.setText(String.format("Type: %s", detail.getType()));
-        addressTextView.setText(String.format("Address: %s", detail.getSellerAddress()));
+        priceTextView.setText(String.format(Locale.getDefault(), "%s", detail.getPrice()));
+        colorTextView.setText(String.format("%s", detail.getColor()));
+        sizeTextView.setText(String.format("%s", detail.getSize()));
+        ageTextView.setText(String.format("%s", detail.getOld()));
+        typeTextView.setText(String.format("%s", detail.getType()));
+        addressTextView.setText(String.format("%s", detail.getSellerAddress()));
         String createAt = detail.getCreatedAt();
         if (createAt != null) {
             String formattedDate = formatDate(createAt);

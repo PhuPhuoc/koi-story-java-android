@@ -43,7 +43,7 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.BlogViewHo
     public void onBindViewHolder(@NonNull BlogViewHolder holder, int position) {
         PostMarket product = postList.get(position);
         holder.nameTextView.setText(product.getArtName());
-        holder.priceTextView.setText("$" + product.getPrice());
+        holder.priceTextView.setText("" + product.getPrice());
         String imageUrl = product.getImage();
 
         // Kiểm tra nếu URL không hợp lệ hoặc rỗng

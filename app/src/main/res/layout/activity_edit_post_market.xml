@@ -3,85 +3,138 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <EditText
-            android:id="@+id/edit_text_name"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Product Name" />
+            android:layout_marginBottom="16dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:text="Cập nhật bài đăng"
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/edit_text_post_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Post Type" />
+            android:layout_marginBottom="12dp"
+            android:hint="Kiểu bài đăng (mua bán/tư vấn)"
+            android:textColorHint="#978A8A" />
 
-        <EditText
-            android:id="@+id/edit_text_color"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Product Color" />
-
-        <EditText
-            android:id="@+id/edit_text_old"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Product Old" />
-
-        <EditText
-            android:id="@+id/edit_text_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Seller Address" />
-
-        <EditText
-            android:id="@+id/edit_text_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Product Size" />
 
         <EditText
             android:id="@+id/edit_text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Product Title" />
+            android:layout_marginBottom="12dp"
+            android:hint="Tựa đề của bài đăng"
+            android:textColorHint="#978A8A" />
+
+        <!-- Product Details Inputs -->
+        <EditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Tên sản phẩm"
+            android:textColorHint="#978A8A" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/edit_text_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Loại cá Koi"
+                android:textColorHint="#978A8A" />
+
+            <EditText
+                android:id="@+id/edit_text_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Màu sắc của cá"
+                android:textColorHint="#978A8A" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/edit_text_old"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Độ tuổi của cá"
+                android:textColorHint="#978A8A" />
+
+            <EditText
+                android:id="@+id/edit_text_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Kích cỡ cá Koi"
+                android:textColorHint="#978A8A" />
+        </LinearLayout>
+
 
         <EditText
             android:id="@+id/edit_text_product_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Product Type" />
-
-        <EditText
-            android:id="@+id/edit_text_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Type" />
-
-        <EditText
-            android:id="@+id/edit_text_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone Number"
-            android:inputType="phone" />
-
-        <EditText
-            android:id="@+id/edit_text_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price"
-            android:inputType="number" />
+            android:layout_marginBottom="12dp"
+            android:hint="Loại sản phẩm"
+            android:textColorHint="#978A8A" />
 
         <EditText
             android:id="@+id/edit_text_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description" />
+            android:layout_marginBottom="12dp"
+            android:hint="Mô tả"
+            android:textColorHint="#978A8A" />
+
+        <EditText
+            android:id="@+id/edit_text_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Giá cả"
+            android:inputType="number"
+            android:textColorHint="#978A8A" />
+
+        <EditText
+            android:id="@+id/edit_text_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Địa chỉ người bán"
+            android:textColorHint="#978A8A" />
+
+        <EditText
+            android:id="@+id/edit_text_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Số điện thoại"
+            android:inputType="phone"
+            android:textColorHint="#978A8A" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -98,10 +151,10 @@
 
         <Button
             android:id="@+id/button_edit"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#456789"
-            android:text="Edit" />
-
+            android:backgroundTint="@color/black"
+            android:text="Cập nhật"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>

@@ -22,15 +22,16 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -39,8 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class EmailAndCameraActivity extends AppCompatActivity {
+public class RegisterActivityV1 extends AppCompatActivity {
 
+    private EditText emailRegister, passwordRegister, confirmPasswordRegister, userNameRegister;
+    private Button registerConfirmButton;
     private static final int CAMERA_REQUEST_CODE = 1000;
     private static final int PERMISSION_REQUEST_CODE = 2000;
     private ImageView imageView;
@@ -49,78 +52,21 @@ public class EmailAndCameraActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private RequestQueue requestQueue;
-    private EditText email;
-//    private void uploadImage() {
-//        if (photoFile == null || !photoFile.exists()) {
-//            Toast.makeText(this, "Vui lòng chụp ảnh trước", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        new Thread(() -> {
-//            try {
-//                // Tạo JSON object cho request body
-//                JSONObject jsonBody = new JSONObject();
-//                // Thêm các trường cần thiết vào jsonBody
-//                // jsonBody.put("username", username);
-//                // jsonBody.put("password", password);
-//
-//                // Tạo RequestBody cho phần JSON
-//                RequestBody requestBody = new MultipartBody.Builder()
-//                        .setType(MultipartBody.FORM)
-//                        .addFormDataPart("json", jsonBody.toString())
-//                        .addFormDataPart("image", photoFile.getName(),
-//                                RequestBody.create(MediaType.parse("image/jpeg"), photoFile))
-//                        .build();
-//
-//                // Tạo request
-//                Request request = new Request.Builder()
-//                        .url("YOUR_API_ENDPOINT")
-//                        .post(requestBody)
-//                        .build();
-//
-//                // Tạo OkHttpClient với timeout
-//                OkHttpClient client = new OkHttpClient.Builder()
-//                        .connectTimeout(30, TimeUnit.SECONDS)
-//                        .writeTimeout(30, TimeUnit.SECONDS)
-//                        .readTimeout(30, TimeUnit.SECONDS)
-//                        .build();
-//
-//                // Thực hiện request
-//                try (Response response = client.newCall(request).execute()) {
-//                    final String responseBody = response.body().string();
-//                    runOnUiThread(() -> {
-//                        if (response.isSuccessful()) {
-//                            Toast.makeText(CameraActivity.this,
-//                                    "Upload thành công!", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(CameraActivity.this,
-//                                    "Upload thất bại: " + responseBody, Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                runOnUiThread(() -> {
-//                    Toast.makeText(CameraActivity.this,
-//                            "Lỗi khi upload: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                });
-//            }
-//        }).start();
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_email_camera);
+        setContentView(R.layout.activity_register);
 
         imageView = findViewById(R.id.imageView);
-        Button loginButton = findViewById(R.id.buttonCapture);
+        emailRegister = findViewById(R.id.emailRegister);
+        passwordRegister = findViewById(R.id.passwordRegister);
+        confirmPasswordRegister = findViewById(R.id.confirmPasswordRegister);
+        userNameRegister = findViewById(R.id.userNameRegister);
+        registerConfirmButton = findViewById(R.id.registerConfirmButton);
         Button openCameraButton = findViewById(R.id.openCamera);
-        email = findViewById(R.id.emailText);
-
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-
 
         openCameraButton.setOnClickListener(v -> {
             if (checkCameraPermission()) {
@@ -130,18 +76,16 @@ public class EmailAndCameraActivity extends AppCompatActivity {
             }
         });
 
-        loginButton.setOnClickListener(v -> {
-            String emailInput = email.getText().toString();
-            if (photoFile != null && photoFile.exists()) {
-                uploadToFirebaseStorage(emailInput);
-                Toast.makeText(EmailAndCameraActivity.this,
-                        "Vui lòng chụp ảnh trước",
-                        Toast.LENGTH_SHORT).show();
-            }
+        registerConfirmButton.setOnClickListener(v -> {
+            String email = emailRegister.getText().toString();
+            String password = passwordRegister.getText().toString();
+            String confirmPassword = confirmPasswordRegister.getText().toString();
+            String userName = userNameRegister.getText().toString();
+            uploadToFirebaseStorage(email, password, userName, confirmPassword);
         });
     }
 
-    private void uploadToFirebaseStorage(String email) {
+    private void uploadToFirebaseStorage(String email, String password, String confirm, String userName) {
         if (photoFile == null || !photoFile.exists()) {
             Toast.makeText(this, "Vui lòng chụp ảnh trước", Toast.LENGTH_SHORT).show();
             return;
@@ -176,8 +120,8 @@ public class EmailAndCameraActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                 String imageUrl = downloadUri.toString();
                 Log.d("Firebase", "Upload success. URL: " + imageUrl);
-                loginUser(email, imageUrl);
-                Toast.makeText(EmailAndCameraActivity.this,
+                registerUser(email, password, confirm, userName, imageUrl);
+                Toast.makeText(RegisterActivityV1.this,
                         "Tải lên thành công!",
                         Toast.LENGTH_SHORT).show();
             });
@@ -185,7 +129,7 @@ public class EmailAndCameraActivity extends AppCompatActivity {
             // Upload thất bại
             progressDialog.dismiss();
             Log.e("Firebase", "Upload failed", e);
-            Toast.makeText(EmailAndCameraActivity.this,
+            Toast.makeText(RegisterActivityV1.this,
                     "Lỗi khi tải lên: " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
         });
@@ -226,75 +170,6 @@ public class EmailAndCameraActivity extends AppCompatActivity {
             Toast.makeText(this, "Lỗi khi tạo file: " + ex.getMessage(),
                     Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void loginUser(String email, String imageUrl) {
-        String url = "http://api.koistory.site/api/v1/users/login";
-        Log.d("email", "loginUser: "+email);
-        Log.d("imageUrl", "loginUser: "+imageUrl);
-
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("email", email);
-            jsonBody.put("file_path", imageUrl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Tạo request
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Log thông tin response
-                        Log.d("LoginResponse", response.toString());
-
-                        try {
-                            JSONObject data = response.getJSONObject("data");
-                            String fbUid = data.getString("fb_uid");
-                            String email = data.getString("email");
-                            String displayName = data.getString("display_name");
-                            String profilePictureUrl = data.getString("profile_picture_url");
-
-                            UserSessionManager.getInstance().setUserData(
-                                    fbUid,
-                                    email,
-                                    displayName,
-                                    profilePictureUrl
-                            );
-
-                            Toast.makeText(EmailAndCameraActivity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(EmailAndCameraActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(EmailAndCameraActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Log lỗi
-                        if (error.networkResponse != null) {
-                            try {
-                                String responseBody = new String(error.networkResponse.data, "UTF-8");
-                                JSONObject jsonResponse = new JSONObject(responseBody);
-                                String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
-                                Toast.makeText(EmailAndCameraActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(EmailAndCameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(EmailAndCameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-        requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(jsonObjectRequest);
     }
 
 
@@ -356,4 +231,66 @@ public class EmailAndCameraActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void registerUser(String email, String password, String userName, String confirmPassword, String imageUrl) {
+        String url = "http://api.koistory.site/api/v1/users/register";
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("email", email);
+            jsonBody.put("password", password);
+            jsonBody.put("user_name", userName);
+            jsonBody.put("confirm_password", confirmPassword);
+            jsonBody.put("face_image", imageUrl);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(RegisterActivityV1.this, "Error creating JSON request", Toast.LENGTH_SHORT).show();
+            return; // Exit early on error
+        }
+
+        // Create request
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Assuming the response contains a "data" object
+                            String message = response.getString("message");
+                            Toast.makeText(RegisterActivityV1.this, message, Toast.LENGTH_SHORT).show();
+
+                            // Redirect to LoginActivity or MainActivity after successful registration
+                            Intent intent = new Intent(RegisterActivityV1.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(RegisterActivityV1.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "UTF-8");
+                                JSONObject jsonResponse = new JSONObject(responseBody);
+                                String errorMessage = jsonResponse.getString("error"); // Get error message
+                                Toast.makeText(RegisterActivityV1.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(RegisterActivityV1.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(RegisterActivityV1.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+        // Add request to RequestQueue
+        requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
 }

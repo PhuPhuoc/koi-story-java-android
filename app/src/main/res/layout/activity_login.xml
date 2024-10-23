@@ -54,33 +54,62 @@
         app:layout_constraintTop_toBottomOf="@id/password" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/registerButton1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Register"
+        android:text="Register V1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loginButton" />
-
     <Button
-        android:id="@+id/FaceAndEmail"
+        android:id="@+id/registerButton2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="LOGIN WITH FACE AND EMAIL"
+        android:text="Register V2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerButton" />
+        app:layout_constraintTop_toBottomOf="@id/registerButton1" />
 
     <Button
-        android:id="@+id/Face"
+        android:id="@+id/FaceAndEmail1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="LOGIN WITH FACE"
+        android:text="LOGIN WITH FACE AND EMAIL V1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/FaceAndEmail" />
+        app:layout_constraintTop_toBottomOf="@id/registerButton2" />
+
+    <Button
+        android:id="@+id/FaceAndEmail2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="LOGIN WITH FACE AND EMAIL V2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/FaceAndEmail1" />
+
+    <Button
+        android:id="@+id/Face1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="LOGIN WITH FACE V1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/FaceAndEmail2" />
+
+    <Button
+        android:id="@+id/Face2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="LOGIN WITH FACE V2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Face1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

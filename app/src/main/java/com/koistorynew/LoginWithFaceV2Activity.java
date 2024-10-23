@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -39,8 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
-public class CameraActivity extends AppCompatActivity {
+public class LoginWithFaceV2Activity  extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1000;
     private static final int PERMISSION_REQUEST_CODE = 2000;
@@ -133,7 +131,7 @@ public class CameraActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             if (photoFile != null && photoFile.exists()) {
                 uploadToFirebaseStorage();
-                Toast.makeText(CameraActivity.this,
+                Toast.makeText(LoginWithFaceV2Activity.this,
                         "Vui lòng chụp ảnh trước",
                         Toast.LENGTH_SHORT).show();
             }
@@ -176,7 +174,7 @@ public class CameraActivity extends AppCompatActivity {
                 String imageUrl = downloadUri.toString();
                 Log.d("Firebase", "Upload success. URL: " + imageUrl);
                 loginUser(imageUrl);
-                Toast.makeText(CameraActivity.this,
+                Toast.makeText(LoginWithFaceV2Activity.this,
                         "Tải lên thành công!",
                         Toast.LENGTH_SHORT).show();
             });
@@ -184,7 +182,7 @@ public class CameraActivity extends AppCompatActivity {
             // Upload thất bại
             progressDialog.dismiss();
             Log.e("Firebase", "Upload failed", e);
-            Toast.makeText(CameraActivity.this,
+            Toast.makeText(LoginWithFaceV2Activity.this,
                     "Lỗi khi tải lên: " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
         });
@@ -192,7 +190,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private boolean checkCameraPermission() {
         return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+                android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestCameraPermission() {
@@ -259,13 +257,13 @@ public class CameraActivity extends AppCompatActivity {
                                     profilePictureUrl
                             );
 
-                            Toast.makeText(CameraActivity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+                            Toast.makeText(LoginWithFaceV2Activity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginWithFaceV2Activity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(CameraActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginWithFaceV2Activity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -278,13 +276,13 @@ public class CameraActivity extends AppCompatActivity {
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
-                                Toast.makeText(CameraActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginWithFaceV2Activity.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginWithFaceV2Activity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginWithFaceV2Activity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

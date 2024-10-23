@@ -31,13 +31,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -52,6 +55,10 @@ public class RegisterActivity extends AppCompatActivity {
     private File photoFile;
     private FirebaseStorage storage;
     private StorageReference storageRef;
+
+    private List<Uri> photoUriList = new ArrayList<>();
+    private List<File> photoFileList = new ArrayList<>();
+    private static final int MAX_IMAGES = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,36 +94,52 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void uploadToFirebaseStorageAndRegister(String email, String password, String userName, String confirmPassword) {
-        // Hiển thị progress dialog khi upload
+        if (photoFileList.isEmpty()) {
+            Toast.makeText(this, "Không có ảnh để tải lên", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Đang tải ảnh lên...");
         progressDialog.show();
 
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String filename = "image_" + timestamp + ".jpg";
-        StorageReference imageRef = storageRef.child("images/" + filename);
+        List<String> imageUrls = new ArrayList<>();
+        final int[] uploadCount = {0};
 
-        UploadTask uploadTask = imageRef.putFile(Uri.fromFile(photoFile));
+        for (int i = 0; i < photoFileList.size(); i++) {
+            File file = photoFileList.get(i);
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+            String filename = "image_" + timestamp + "_" + i + ".jpg";
+            StorageReference imageRef = storageRef.child("images/" + filename);
 
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-            progressDialog.setMessage("Đã tải lên " + (int) progress + "%");
-        }).addOnSuccessListener(taskSnapshot -> {
-            imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                String imageUrl = downloadUri.toString();
-                Log.d("Firebase", "Upload thành công. URL: " + imageUrl);
+            UploadTask uploadTask = imageRef.putFile(Uri.fromFile(file));
+
+            int finalI = i;
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                    String imageUrl = "\"" + downloadUri.toString() + "\""; // Wrap the URL in quotes
+                    imageUrls.add(imageUrl);
+                    uploadCount[0]++;
+
+                    if (uploadCount[0] == photoFileList.size()) {
+                        registerUser(email, password, userName, confirmPassword, imageUrls);
+                        progressDialog.dismiss();
+                    }
+                });
+            }).addOnFailureListener(e -> {
                 progressDialog.dismiss();
-                registerUser(email, password, userName, confirmPassword, imageUrl);
+                Toast.makeText(RegisterActivity.this, "Lỗi tải lên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }).addOnProgressListener(taskSnapshot -> {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                progressDialog.setMessage("Đã tải lên " + (int) progress + "%");
             });
-        }).addOnFailureListener(e -> {
-            progressDialog.dismiss();
-            Log.e("Firebase", "Upload thất bại", e);
-            Toast.makeText(RegisterActivity.this, "Lỗi khi tải ảnh lên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }
+
+        progressDialog.dismiss();
     }
 
 
-    private void registerUser(String email, String password, String userName, String confirmPassword, String face_image) {
+    private void registerUser(String email, String password, String userName, String confirmPassword, List face_image) {
         String url = "http://api.koistory.site/api/v1/users/register";
         Log.d("RegisterData", "email: " + email + ", password: " + password +
                 ", userName: " + userName + ", confirmPassword: " + confirmPassword +
@@ -128,7 +151,8 @@ public class RegisterActivity extends AppCompatActivity {
             jsonBody.put("password", password);
             jsonBody.put("user_name", userName);
             jsonBody.put("confirm_password", confirmPassword);
-            jsonBody.put("face_image", face_image);
+            JSONArray jsonArray = new JSONArray(face_image);
+            jsonBody.put("face_image", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(RegisterActivity.this, "Error creating JSON request", Toast.LENGTH_SHORT).show();
@@ -189,13 +213,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
+        if (photoUriList.size() >= MAX_IMAGES) {
+            Toast.makeText(this, "Đã đạt đến giới hạn tối đa 5 ảnh!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
             photoFile = createImageFile();
             if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(this,
-                        "com.koistorynew.fileprovider",
-                        photoFile);
-
+                photoUri = FileProvider.getUriForFile(this, "com.koistorynew.fileprovider", photoFile);
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
@@ -203,72 +229,64 @@ public class RegisterActivity extends AppCompatActivity {
                 try {
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
                 } catch (Exception e) {
-                    // Nếu không thể mở intent camera thông thường, thử phương án backup
                     Intent backupIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(backupIntent, CAMERA_REQUEST_CODE);
                 }
             }
         } catch (IOException ex) {
-            Toast.makeText(this, "Lỗi khi tạo file: " + ex.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi khi tạo file: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                .format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
 
-        // Sử dụng getExternalFilesDir() để lưu trong thư mục ứng dụng
         File storageDir = new File(getExternalFilesDir(null), "CapturedImages");
-
-        // Đảm bảo thư mục tồn tại
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
-        // Tạo file tạm thời
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",        /* suffix */
-                storageDir     /* directory */
-        );
-
-        return image;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (photoUriList.size() >= MAX_IMAGES) {
+                Toast.makeText(this, "Đã đạt đến giới hạn tối đa 5 ảnh!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             try {
                 if (photoUri != null && photoFile.exists()) {
-                    // Nếu chụp ảnh full resolution thành công
+                    photoUriList.add(photoUri);
+                    photoFileList.add(photoFile);
                     imageView.setImageURI(null);
                     imageView.setImageURI(photoUri);
-                } else if (data != null && data.getExtras() != null) {
-                    // Fallback cho thumbnail
-                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                    imageView.setImageBitmap(thumbnail);
+
+                    Toast.makeText(this, "Ảnh đã được chụp! Bạn có thể chụp thêm.", Toast.LENGTH_SHORT).show();
+
+                    if (photoUriList.size() < MAX_IMAGES) {
+                        openCamera(); // Automatically reopen camera until 5 images are captured
+                    }
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "Lỗi hiển thị ảnh: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi hiển thị ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                Toast.makeText(this, "Cần cấp quyền camera để sử dụng tính năng này",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }

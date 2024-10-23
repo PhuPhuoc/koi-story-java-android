@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,8 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
-public class CameraActivity extends AppCompatActivity {
+public class LoginWithFaceAndEmailV1 extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1000;
     private static final int PERMISSION_REQUEST_CODE = 2000;
@@ -50,7 +49,7 @@ public class CameraActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private RequestQueue requestQueue;
-
+    private EditText email;
 //    private void uploadImage() {
 //        if (photoFile == null || !photoFile.exists()) {
 //            Toast.makeText(this, "Vui lòng chụp ảnh trước", Toast.LENGTH_SHORT).show();
@@ -112,11 +111,12 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_email_camera);
 
         imageView = findViewById(R.id.imageView);
         Button loginButton = findViewById(R.id.buttonCapture);
         Button openCameraButton = findViewById(R.id.openCamera);
+        email = findViewById(R.id.emailText);
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
@@ -131,16 +131,17 @@ public class CameraActivity extends AppCompatActivity {
         });
 
         loginButton.setOnClickListener(v -> {
+            String emailInput = email.getText().toString();
             if (photoFile != null && photoFile.exists()) {
-                uploadToFirebaseStorage();
-                Toast.makeText(CameraActivity.this,
+                uploadToFirebaseStorage(emailInput);
+                Toast.makeText(LoginWithFaceAndEmailV1.this,
                         "Vui lòng chụp ảnh trước",
                         Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void uploadToFirebaseStorage() {
+    private void uploadToFirebaseStorage(String email) {
         if (photoFile == null || !photoFile.exists()) {
             Toast.makeText(this, "Vui lòng chụp ảnh trước", Toast.LENGTH_SHORT).show();
             return;
@@ -175,8 +176,8 @@ public class CameraActivity extends AppCompatActivity {
             imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                 String imageUrl = downloadUri.toString();
                 Log.d("Firebase", "Upload success. URL: " + imageUrl);
-                loginUser(imageUrl);
-                Toast.makeText(CameraActivity.this,
+                loginUser(email, imageUrl);
+                Toast.makeText(LoginWithFaceAndEmailV1.this,
                         "Tải lên thành công!",
                         Toast.LENGTH_SHORT).show();
             });
@@ -184,7 +185,7 @@ public class CameraActivity extends AppCompatActivity {
             // Upload thất bại
             progressDialog.dismiss();
             Log.e("Firebase", "Upload failed", e);
-            Toast.makeText(CameraActivity.this,
+            Toast.makeText(LoginWithFaceAndEmailV1.this,
                     "Lỗi khi tải lên: " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
         });
@@ -192,7 +193,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private boolean checkCameraPermission() {
         return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+                android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestCameraPermission() {
@@ -227,11 +228,14 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    private void loginUser(String imageUrl) {
-        String url = "http://api.koistory.site/api/v1/users/login-just-by-face";
+    private void loginUser(String email, String imageUrl) {
+        String url = "http://api.koistory.site/api/v1/users/login-by-face-with-email";
+        Log.d("email", "loginUser: "+email);
+        Log.d("imageUrl", "loginUser: "+imageUrl);
 
         JSONObject jsonBody = new JSONObject();
         try {
+            jsonBody.put("email", email);
             jsonBody.put("file_path", imageUrl);
         } catch (Exception e) {
             e.printStackTrace();
@@ -259,13 +263,13 @@ public class CameraActivity extends AppCompatActivity {
                                     profilePictureUrl
                             );
 
-                            Toast.makeText(CameraActivity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+                            Toast.makeText(LoginWithFaceAndEmailV1.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginWithFaceAndEmailV1.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(CameraActivity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginWithFaceAndEmailV1.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -278,13 +282,13 @@ public class CameraActivity extends AppCompatActivity {
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
-                                Toast.makeText(CameraActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginWithFaceAndEmailV1.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginWithFaceAndEmailV1.this, "Login Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginWithFaceAndEmailV1.this, "Login Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

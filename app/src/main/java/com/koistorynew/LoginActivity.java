@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
-    private Button loginButton, registerButton,faceBtn,faceAndEmailBtn;
+    private Button loginButton, registerButton1, registerButton2, faceBtn1, faceBtn2, faceAndEmailBtn1, faceAndEmailBtn2;
     private RequestQueue requestQueue;
 
     @Override
@@ -32,9 +32,14 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
-        registerButton = findViewById(R.id.registerButton);
-        faceBtn = findViewById(R.id.Face);
-        faceAndEmailBtn = findViewById(R.id.FaceAndEmail);
+        registerButton1 = findViewById(R.id.registerButton1);
+        registerButton2 = findViewById(R.id.registerButton2);
+
+        faceBtn1 = findViewById(R.id.Face1);
+        faceBtn2 = findViewById(R.id.Face2);
+
+        faceAndEmailBtn1 = findViewById(R.id.FaceAndEmail1);
+        faceAndEmailBtn2 = findViewById(R.id.FaceAndEmail2);
 
         loginButton.setOnClickListener(v -> {
             String emailInput = email.getText().toString();
@@ -42,17 +47,29 @@ public class LoginActivity extends AppCompatActivity {
             loginUser(emailInput, passwordInput);
         });
 
-        registerButton.setOnClickListener(v -> {
+        registerButton1.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivityV1.class);
+            startActivity(intent);
+        });
+        registerButton2.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 
-        faceBtn.setOnClickListener(v -> {
+        faceBtn1.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, CameraActivity.class);
             startActivity(intent);
         });
-        faceAndEmailBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, EmailAndCameraActivity.class);
+        faceBtn2.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceV2Activity.class);
+            startActivity(intent);
+        });
+        faceAndEmailBtn1.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceAndEmailV1.class);
+            startActivity(intent);
+        });
+        faceAndEmailBtn2.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceAndEmailV2.class);
             startActivity(intent);
         });
     }

@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -233,7 +234,9 @@ public class RegisterActivityV1 extends AppCompatActivity {
     }
 
     private void registerUser(String email, String password, String userName, String confirmPassword, String imageUrl) {
-        String url = "http://api.koistory.site/api/v1/users/register";
+//        String url = "http://api.koistory.site/api/v1/users/register";
+        String url = "http://10.0.2.2:8080/api/v1/users/register";
+
 
         JSONObject jsonBody = new JSONObject();
         try {
@@ -247,7 +250,9 @@ public class RegisterActivityV1 extends AppCompatActivity {
             Toast.makeText(RegisterActivityV1.this, "Error creating JSON request", Toast.LENGTH_SHORT).show();
             return; // Exit early on error
         }
-
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang đăng kí...");
+        progressDialog.show();
         // Create request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
                 new Response.Listener<JSONObject>() {
@@ -258,12 +263,14 @@ public class RegisterActivityV1 extends AppCompatActivity {
                             String message = response.getString("message");
                             Toast.makeText(RegisterActivityV1.this, message, Toast.LENGTH_SHORT).show();
 
+                            progressDialog.dismiss();
                             // Redirect to LoginActivity or MainActivity after successful registration
                             Intent intent = new Intent(RegisterActivityV1.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            progressDialog.dismiss();
                             Toast.makeText(RegisterActivityV1.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -276,16 +283,25 @@ public class RegisterActivityV1 extends AppCompatActivity {
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Get error message
+                                progressDialog.dismiss();
                                 Toast.makeText(RegisterActivityV1.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                progressDialog.dismiss();
                                 Toast.makeText(RegisterActivityV1.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
+                            progressDialog.dismiss();
                             Toast.makeText(RegisterActivityV1.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                50000, // 30 seconds timeout
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, // Default retry count
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT // Default backoff multiplier
+        ));
 
         // Add request to RequestQueue
         requestQueue = Volley.newRequestQueue(this);

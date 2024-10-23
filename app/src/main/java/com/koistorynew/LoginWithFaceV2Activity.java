@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -38,7 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class LoginWithFaceV2Activity  extends AppCompatActivity {
+public class LoginWithFaceV2Activity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1000;
     private static final int PERMISSION_REQUEST_CODE = 2000;
@@ -226,7 +227,8 @@ public class LoginWithFaceV2Activity  extends AppCompatActivity {
     }
 
     private void loginUser(String imageUrl) {
-        String url = "http://api.koistory.site/api/v1/users/login-just-by-face";
+//        String url = "http://api.koistory.site/api/v1/users/login-just-by-face";
+        String url = "http://10.0.2.2:8080/api/v1/users/login-just-by-face";
 
         JSONObject jsonBody = new JSONObject();
         try {
@@ -234,6 +236,9 @@ public class LoginWithFaceV2Activity  extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang đăng nhập...");
+        progressDialog.show();
 
         // Tạo request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
@@ -257,12 +262,14 @@ public class LoginWithFaceV2Activity  extends AppCompatActivity {
                                     profilePictureUrl
                             );
 
+                            progressDialog.dismiss();
                             Toast.makeText(LoginWithFaceV2Activity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginWithFaceV2Activity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            progressDialog.dismiss();
                             Toast.makeText(LoginWithFaceV2Activity.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -276,16 +283,25 @@ public class LoginWithFaceV2Activity  extends AppCompatActivity {
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
+                                progressDialog.dismiss();
                                 Toast.makeText(LoginWithFaceV2Activity.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
+                                progressDialog.dismiss();
                                 e.printStackTrace();
                                 Toast.makeText(LoginWithFaceV2Activity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
+                            progressDialog.dismiss();
                             Toast.makeText(LoginWithFaceV2Activity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                50000, // 30 seconds timeout
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, // Default retry count
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT // Default backoff multiplier
+        ));
 
         requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);

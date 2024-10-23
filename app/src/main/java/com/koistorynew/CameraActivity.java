@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -228,7 +229,8 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void loginUser(String imageUrl) {
-        String url = "http://api.koistory.site/api/v1/users/login-just-by-face";
+//        String url = "http://api.koistory.site/api/v1/users/login-just-by-face";
+        String url = "http://10.0.2.2:8080/api/v1/users/login-just-by-face";
 
         JSONObject jsonBody = new JSONObject();
         try {
@@ -236,6 +238,11 @@ public class CameraActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang đăng nhập...");
+        progressDialog.show();
+
 
         // Tạo request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
@@ -258,7 +265,7 @@ public class CameraActivity extends AppCompatActivity {
                                     displayName,
                                     profilePictureUrl
                             );
-
+                            progressDialog.dismiss();
                             Toast.makeText(CameraActivity.this, "Welcome, " + displayName, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(CameraActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -279,15 +286,24 @@ public class CameraActivity extends AppCompatActivity {
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
                                 Toast.makeText(CameraActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             }
                         } else {
                             Toast.makeText(CameraActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                         }
                     }
                 });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                50000, // 30 seconds timeout
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, // Default retry count
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT // Default backoff multiplier
+        ));
 
         requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);

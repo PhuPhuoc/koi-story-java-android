@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
-    private Button loginButton, registerButton,faceBtn;
+    private Button loginButton, registerButton,faceBtn,faceAndEmailBtn;
     private RequestQueue requestQueue;
 
     @Override
@@ -34,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
         faceBtn = findViewById(R.id.Face);
+        faceAndEmailBtn = findViewById(R.id.FaceAndEmail);
+
         loginButton.setOnClickListener(v -> {
             String emailInput = email.getText().toString();
             String passwordInput = password.getText().toString();
@@ -44,8 +46,13 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
+
         faceBtn.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, CameraActivity.class);
+            startActivity(intent);
+        });
+        faceAndEmailBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, EmailAndCameraActivity.class);
             startActivity(intent);
         });
     }

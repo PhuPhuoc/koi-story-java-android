@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
+
+    <TextView
+        android:id="@+id/registerText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tạo tài khoản"
+        android:textSize="32sp"
+        android:textColor="@color/black"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Điền để tạo tài khoản mới"
+        android:textSize="16sp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@id/registerText"/>
 
     <EditText
         android:id="@+id/emailRegister"
@@ -12,72 +29,99 @@
         android:layout_marginTop="24dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
+        android:layout_marginTop="80dp"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_input" />
 
     <EditText
         android:id="@+id/passwordRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Password"
+        android:hint="Mật khẩu"
         android:inputType="textPassword"
+        android:layout_marginTop="8dp"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailRegister" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_input" />
 
     <EditText
         android:id="@+id/confirmPasswordRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Confirm Password"
+        android:hint="Xác nhận mật khẩu"
         android:inputType="textPassword"
+        android:layout_marginTop="8dp"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordRegister" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_input" />
 
     <EditText
         android:id="@+id/userNameRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Username"
+        android:hint="Tên người dùng"
         android:inputType="text"
+        android:layout_marginTop="8dp"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirmPasswordRegister" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_input" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/userNameRegister"/>
-
-    <Button
-        android:id="@+id/openCamera"
-        android:layout_width="match_parent"
+    <!-- Line above the button -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/userNameRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        android:text="Chụp ảnh"
-        app:layout_constraintTop_toBottomOf="@id/imageView" />
+        android:gravity="center">
+
+        <!-- First horizontal line -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#BDBDBD"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Text in the middle -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_back2"
+            />
+
+        <!-- Second horizontal line -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#BDBDBD"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/registerConfirmButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="ĐĂNG KÝ"
         android:layout_marginTop="24dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/openCamera" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        android:background="@drawable/rounded_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

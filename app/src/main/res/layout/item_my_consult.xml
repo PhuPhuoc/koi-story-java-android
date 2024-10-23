@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="18dp"
-    android:padding="18dp">
+    android:padding="18dp"
+    app:cardCornerRadius="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,7 +45,8 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="Tên người đăng"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="20dp"/>
 
                 <!-- Ngày đăng -->
                 <TextView
@@ -52,7 +54,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ngày đăng"
-                    android:textColor="@android:color/darker_gray" />
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14dp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -64,7 +67,7 @@
             android:paddingTop="8dp"
             android:text="Title"
             android:textStyle="bold"
-            android:textSize="20dp"
+            android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container" />
@@ -73,7 +76,7 @@
             android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/consultTitle" />
@@ -87,7 +90,8 @@
             android:text="Mô tả"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView" />
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            android:textSize="16dp"/>
 
         <Button
             android:id="@+id/commentButton"
@@ -97,7 +101,8 @@
             android:text="Xem bình luận"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+            />
         <Button
             android:id="@+id/editButton"
             android:layout_width="0dp"
@@ -107,7 +112,8 @@
             android:text="Sửa"
             app:layout_constraintEnd_toStartOf="@+id/deleteButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/commentButton" />
+            app:layout_constraintTop_toBottomOf="@id/commentButton"
+            />
 
         <Button
             android:id="@+id/deleteButton"
@@ -127,7 +133,8 @@
             android:backgroundTint="@android:color/holo_green_light"
             android:text="Sửa ảnh"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

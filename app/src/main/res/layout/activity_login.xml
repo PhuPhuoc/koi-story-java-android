@@ -1,157 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:src="@drawable/koi_story_logo"
-        android:contentDescription="Koi Story Image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/email"
-        android:layout_marginBottom="32dp" />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:background="@drawable/rounded_input"
-        app:layout_constraintTop_toBottomOf="@id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Mật khẩu"
-        android:inputType="textPassword"
-        android:layout_marginTop="8dp"
-        android:padding="12dp"
-        android:background="@drawable/rounded_input"
-        app:layout_constraintTop_toBottomOf="@id/email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Đăng nhập"
-        android:layout_marginTop="24dp"
-        android:text="Login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        android:background="@drawable/rounded_button"/>
-
-    <!-- LinearLayout for the two lines and the "OR" text -->
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:gravity="center">
-
-        <!-- First horizontal line -->
-        <View
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="#BDBDBD"
-            android:layout_marginEnd="8dp" />
+            android:layout_height="200dp"
+            android:src="@drawable/koi_story_logo"
+            android:contentDescription="Koi Story Image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="32dp" />
 
-        <!-- Text in the middle -->
-        <TextView
-            android:id="@+id/orText"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="HOẶC"
-            android:textColor="#BDBDBD"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginTop="16dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Second horizontal line -->
-        <View
+        <EditText
+            android:id="@+id/password"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="#BDBDBD"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:hint="Mật khẩu"
+            android:inputType="textPassword"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            app:layout_constraintTop_toBottomOf="@id/email"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/registerButton1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Register V1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loginButton" />
-    <Button
-        android:id="@+id/registerButton2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Register V2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerButton1" />
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Đăng nhập"
+            android:background="@drawable/rounded_button"
+            app:layout_constraintTop_toBottomOf="@id/password"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/FaceAndEmail1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="LOGIN WITH FACE AND EMAIL V1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerButton2" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/loginButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/FaceAndEmail2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="LOGIN WITH FACE AND EMAIL V2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/FaceAndEmail1" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#BDBDBD"
+                android:layout_marginEnd="8dp" />
 
-    <Button
-        android:id="@+id/Face1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="LOGIN WITH FACE V1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/FaceAndEmail2" />
+            <TextView
+                android:id="@+id/orText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HOẶC"
+                android:textColor="#BDBDBD"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
 
-    <Button
-        android:id="@+id/Face2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="ĐĂNG KÝ"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/rounded_button"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#BDBDBD"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/registerButton1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Register V1"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+        <Button
+            android:id="@+id/registerButton2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Register V2"
+            app:layout_constraintTop_toBottomOf="@id/registerButton1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+        <Button
+            android:id="@+id/FaceAndEmail1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="LOGIN WITH FACE AND EMAIL V1"
+            app:layout_constraintTop_toBottomOf="@id/registerButton2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+        <Button
+            android:id="@+id/FaceAndEmail2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="LOGIN WITH FACE AND EMAIL V2"
+            app:layout_constraintTop_toBottomOf="@id/FaceAndEmail1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+        <Button
+            android:id="@+id/Face1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="LOGIN WITH FACE V1"
+            app:layout_constraintTop_toBottomOf="@id/FaceAndEmail2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+        <Button
+            android:id="@+id/Face2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="LOGIN WITH FACE V2"
+            app:layout_constraintTop_toBottomOf="@id/Face1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_button"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

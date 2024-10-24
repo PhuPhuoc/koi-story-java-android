@@ -8,7 +8,8 @@
         android:id="@+id/emailText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:hint="Email"
+        android:background="@drawable/rounded_input"/>
 
     <ImageView
         android:id="@id/imageView"
@@ -22,13 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Chụp ảnh" />
+        android:text="Chụp ảnh"
+        android:background="@drawable/rounded_button"/>
 
     <Button
         android:id="@+id/buttonCapture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Đăng nhập" />
+        android:text="Đăng nhập"
+        android:background="@drawable/rounded_button"
+        />
 
 </LinearLayout>

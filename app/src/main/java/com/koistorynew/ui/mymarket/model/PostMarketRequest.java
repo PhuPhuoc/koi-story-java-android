@@ -7,7 +7,6 @@ public class PostMarketRequest {
     private String userId;
     private String postType;
     private String title;
-    private String createdAt;
     private String productName;
     private String productType;
     private double price;
@@ -50,14 +49,6 @@ public class PostMarketRequest {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getProductName() {

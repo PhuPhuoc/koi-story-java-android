@@ -46,13 +46,13 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.BlogViewHo
         holder.priceTextView.setText("" + product.getPrice());
         String imageUrl = product.getImage();
 
-        // Kiểm tra nếu URL không hợp lệ hoặc rỗng
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
-            Picasso.get().load(imageUrl).into(holder.imageView);
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(0, 500)
+                    .into(holder.imageView);
         } else {
-            // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
-            holder.imageView.setImageResource(R.drawable.ic_add);
+            holder.imageView.setImageResource(R.drawable.ic_no_image);
         }
 
         holder.itemView.setOnClickListener(view -> {

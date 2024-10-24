@@ -47,7 +47,6 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
         // Ensure you are using the modulo operator to get the correct image URL
         String imageUrl = imageUrls.get(position % imageUrls.size());
         Glide.with(holder.imageView.getContext()).load(imageUrl).into(holder.imageView);
-
     }
 
 

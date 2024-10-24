@@ -83,6 +83,7 @@ public class AddConsultActivity extends AppCompatActivity {
         imageContainer = findViewById(R.id.image_container);
 
         // Open intent to pick multiple images from the gallery
+        // Open intent to pick a single image from the gallery
         ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -90,12 +91,15 @@ public class AddConsultActivity extends AppCompatActivity {
                         Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
                             selectedImageUri = imageUri;
-                            addImageToContainer(imageUri); // Hiển thị ảnh
+                            // Clear previous images and add the new one
+                            imageContainer.removeAllViews(); // Remove existing images
+                            addImageToContainer(imageUri); // Add the new image
                             Toast.makeText(AddConsultActivity.this, "Selected an image", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
+
 
 
         // Handle the "Upload Image" button click
@@ -139,7 +143,7 @@ public class AddConsultActivity extends AppCompatActivity {
                 .addOnSuccessListener(taskSnapshot -> {
                     imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         progressDialog.dismiss();
-                            submitDataToApi(title, post_type, content, userId, selectedImageUri.toString());
+                            submitDataToApi(title, post_type, content, userId, uri.toString());
                     });
                 })
                 .addOnFailureListener(e -> {
@@ -184,7 +188,6 @@ public class AddConsultActivity extends AppCompatActivity {
 
 
     private void addImageToContainer(Uri imageUri) {
-        // FrameLayout để chứa cả ảnh và nút "X"
         FrameLayout frameLayout = new FrameLayout(this);
         frameLayout.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
         frameLayout.setPadding(8, 8, 8, 8); // Khoảng cách giữa các ảnh
@@ -197,8 +200,10 @@ public class AddConsultActivity extends AppCompatActivity {
         // Load ảnh vào ImageView sử dụng Glide
         Glide.with(this)
                 .load(imageUri)
-                .override(200, 200) // Giới hạn kích thước
+                .override(200, 200) // Downscale to 200x200 pixels
+                .centerCrop() // Crop the image to fit the ImageView
                 .into(imageView);
+
 
         // Nút ImageButton "X" để xóa ảnh
         ImageButton closeButton = new ImageButton(this);

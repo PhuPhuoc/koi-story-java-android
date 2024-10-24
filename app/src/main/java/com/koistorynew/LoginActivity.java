@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText email, password;
-    private Button loginButton, registerButton;
+    private Button loginButton, registerButton1, registerButton2, faceBtn1, faceBtn2, faceAndEmailBtn1, faceAndEmailBtn2;
     private RequestQueue requestQueue;
 
     @Override
@@ -32,7 +32,14 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.loginButton);
-        registerButton = findViewById(R.id.registerButton);
+        registerButton1 = findViewById(R.id.registerButton1);
+        registerButton2 = findViewById(R.id.registerButton2);
+
+        faceBtn1 = findViewById(R.id.Face1);
+        faceBtn2 = findViewById(R.id.Face2);
+
+        faceAndEmailBtn1 = findViewById(R.id.FaceAndEmail1);
+        faceAndEmailBtn2 = findViewById(R.id.FaceAndEmail2);
 
         loginButton.setOnClickListener(v -> {
             String emailInput = email.getText().toString();
@@ -40,8 +47,29 @@ public class LoginActivity extends AppCompatActivity {
             loginUser(emailInput, passwordInput);
         });
 
-        registerButton.setOnClickListener(v -> {
+        registerButton1.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivityV1.class);
+            startActivity(intent);
+        });
+        registerButton2.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+
+        faceBtn1.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, CameraActivity.class);
+            startActivity(intent);
+        });
+        faceBtn2.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceV2Activity.class);
+            startActivity(intent);
+        });
+        faceAndEmailBtn1.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceAndEmailV1.class);
+            startActivity(intent);
+        });
+        faceAndEmailBtn2.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, LoginWithFaceAndEmailV2.class);
             startActivity(intent);
         });
     }
@@ -95,12 +123,9 @@ public class LoginActivity extends AppCompatActivity {
                         // Log lỗi
                         if (error.networkResponse != null) {
                             try {
-                                // Chuyển đổi phản hồi thành chuỗi
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 JSONObject jsonResponse = new JSONObject(responseBody);
                                 String errorMessage = jsonResponse.getString("error"); // Lấy thông báo lỗi
-
-                                // Hiển thị thông báo lỗi
                                 Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 e.printStackTrace();

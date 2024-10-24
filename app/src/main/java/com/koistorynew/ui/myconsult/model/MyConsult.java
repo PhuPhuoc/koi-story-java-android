@@ -8,10 +8,11 @@ public class MyConsult {
     private String post_type;
     private String title;
     private String content;
+    private String image_id;
     private String file_path;
     private String created_at;
 
-    public MyConsult(String id, String user_id, String user_name, String user_avatar, String post_type, String title, String content, String file_path, String created_at) {
+    public MyConsult(String id, String user_id, String user_name, String user_avatar, String post_type, String title, String content, String image_id, String file_path, String created_at) {
         this.id = id;
         this.user_id = user_id;
         this.user_name = user_name;
@@ -19,6 +20,7 @@ public class MyConsult {
         this.post_type = post_type;
         this.title = title;
         this.content = content;
+        this.image_id = image_id;
         this.file_path = file_path;
         this.created_at = created_at;
     }
@@ -49,6 +51,10 @@ public class MyConsult {
 
     public String getContent() {
         return content;
+    }
+
+    public String getImage_id() {
+        return image_id;
     }
 
     public String getFile_path() {

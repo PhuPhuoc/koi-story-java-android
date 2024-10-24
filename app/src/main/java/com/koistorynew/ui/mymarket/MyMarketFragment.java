@@ -45,7 +45,6 @@ public class MyMarketFragment extends Fragment {
         RecyclerView recyclerView = binding.recyclerViewMarket;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        // Quan sát LiveData từ BlogViewModel để cập nhật dữ liệu cho RecyclerView khi thay đổi
         myMarketViewModel.getMyMarketPostsLiveData().observe(getViewLifecycleOwner(), postMarket -> {
             if (myMarketAdapter == null) {
                 myMarketAdapter = new MyMarketAdapter(getContext(),postMarket, itemId -> showDeleteConfirmationDialog(itemId));

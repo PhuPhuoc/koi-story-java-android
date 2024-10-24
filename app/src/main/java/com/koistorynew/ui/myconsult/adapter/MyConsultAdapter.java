@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.koistorynew.R;
 import com.koistorynew.ui.myconsult.EditConsultActivity;
+import com.koistorynew.ui.myconsult.EditImagesConsultActivity;
 import com.koistorynew.ui.myconsult.MyConsultCommentActivity;
 import com.koistorynew.ui.myconsult.model.MyConsult;
-import com.koistorynew.ui.mymarket.EditMarketActivity;
-import com.koistorynew.ui.mymarket.adapter.MyMarketAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
     private Context context;
     private final MyConsultAdapter.OnDeleteClickListener onDeleteClickListener;
 
-    public MyConsultAdapter(Context context,List<MyConsult> consultList, MyConsultAdapter.OnDeleteClickListener onDeleteClickListener) {
+    public MyConsultAdapter(Context context, List<MyConsult> consultList, MyConsultAdapter.OnDeleteClickListener onDeleteClickListener) {
         this.consultList = consultList;
         this.context = context;
         this.onDeleteClickListener = onDeleteClickListener;
@@ -53,13 +52,14 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         holder.descriptionTextView.setText(consult.getContent());
         String imageUrl = consult.getFile_path();
         holder.title.setText(consult.getTitle());
-        // Kiểm tra nếu URL không hợp lệ hoặc rỗng
+
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
-            Picasso.get().load(imageUrl).into(holder.imageView);
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(300, 300)
+                    .into(holder.imageView);
         } else {
-            // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
-            holder.imageView.setImageResource(R.drawable.ic_add);
+            holder.imageView.setImageResource(R.drawable.ic_no_image);
         }
 
         holder.deleteButton.setOnClickListener(v -> {
@@ -69,17 +69,25 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         holder.editButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditConsultActivity.class);
             intent.putExtra("CONSULT_ID", consult.getId());
-            intent.putExtra("CONSULT_TITLE",consult.getTitle());
-            intent.putExtra("CONSULT_CONTENT",consult.getContent());
-            intent.putExtra("CONSULT_POST_TYPE",consult.getPost_type());
-            intent.putExtra("CONSULT_FILE_PATH",consult.getFile_path());
+            intent.putExtra("CONSULT_TITLE", consult.getTitle());
+            intent.putExtra("CONSULT_CONTENT", consult.getContent());
+            intent.putExtra("CONSULT_POST_TYPE", consult.getPost_type());
+            intent.putExtra("CONSULT_FILE_PATH", consult.getFile_path());
             context.startActivity(intent);
         });
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MyConsultCommentActivity.class);
-            intent.putExtra("POST_ID", consult.getId()); // Assuming you want to pass consult ID
+            intent.putExtra("POST_ID", consult.getId());
             view.getContext().startActivity(intent);
+        });
+
+        holder.editImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditImagesConsultActivity.class);
+            intent.putExtra("ID", consult.getId());
+            intent.putExtra("IMAGE", consult.getFile_path());
+            intent.putExtra("IMAGE_ID", consult.getImage_id());
+            context.startActivity(intent);
         });
     }
 
@@ -97,6 +105,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         public Button deleteButton;
         public Button editButton;
         public TextView title;
+        public Button editImageButton;
 
         public ConsultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,6 +117,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             deleteButton = itemView.findViewById(R.id.deleteButton);
             editButton = itemView.findViewById(R.id.editButton);
             title = itemView.findViewById(R.id.consultTitle);
+            editImageButton = itemView.findViewById(R.id.editImageButton);
         }
     }
 

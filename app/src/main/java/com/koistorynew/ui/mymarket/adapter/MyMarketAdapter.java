@@ -55,11 +55,13 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
 
         // Kiểm tra nếu URL không hợp lệ hoặc rỗng
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
-            Picasso.get().load(imageUrl).into(holder.imageView);
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(300, 300)
+                    .into(holder.imageView);
         } else {
             // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
-            holder.imageView.setImageResource(R.drawable.ic_add);
+            holder.imageView.setImageResource(R.drawable.ic_no_image);
         }
 
         holder.itemView.setOnClickListener(view -> {
@@ -72,6 +74,7 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
         holder.deleteButton.setOnClickListener(v -> {
             onDeleteClickListener.onDeleteClick(product.getId());
         });
+
         holder.editButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditMarketActivity.class);
             intent.putExtra("ID", product.getId());
@@ -95,7 +98,8 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
         public TextView priceTextView;
         public Button deleteButton; // Thêm ImageView cho nút xóa
         public Button editButton;
-        public  Button editImageButton;
+        public Button editImageButton;
+
         public BlogViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
@@ -103,7 +107,7 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
             priceTextView = itemView.findViewById(R.id.priceTextView);
             deleteButton = itemView.findViewById(R.id.deleteButton);
             editButton = itemView.findViewById(R.id.editButton);
-            editImageButton= itemView.findViewById(R.id.editImageButton);
+            editImageButton = itemView.findViewById(R.id.editImageButton);
         }
     }
 

@@ -51,7 +51,8 @@ public class AddMarketActivity extends AppCompatActivity {
     private EditText editTextName, editTextPostType, editTextColor, editTextOld, editTextAddress,
             editTextSize, editTextTitle, editTextProductType, editTextType, editTextPhone,
             editTextPrice, editTextDescription;
-    private Button uploadImageButton, submitButton;
+    private Button submitButton;
+    private ImageButton uploadImageButton;
     private LinearLayout imageContainer; // Container for selected images
     private List<Uri> selectedImages;  // List of selected images
     private MyMarketViewModel myMarketViewModel;
@@ -87,12 +88,12 @@ public class AddMarketActivity extends AppCompatActivity {
         editTextOld = findViewById(R.id.edit_text_old);
         editTextPhone = findViewById(R.id.edit_text_phone);
         editTextPostType = findViewById(R.id.edit_text_post_type);
+        editTextTitle = findViewById(R.id.edit_text_title);
         editTextPrice = findViewById(R.id.edit_text_price);
         editTextName = findViewById(R.id.edit_text_name);
         editTextProductType = findViewById(R.id.edit_text_product_type);
         editTextAddress = findViewById(R.id.edit_text_address);
         editTextSize = findViewById(R.id.edit_text_size);
-        editTextTitle = findViewById(R.id.edit_text_title);
         editTextType = findViewById(R.id.edit_text_type);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);
@@ -208,7 +209,7 @@ public class AddMarketActivity extends AppCompatActivity {
                     })
                     .addOnProgressListener(snapshot -> {
                         double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        progressDialog.setMessage("Uploading: " + (int)progress + "%");
+                        progressDialog.setMessage("Uploading: " + (int) progress + "%");
                     });
         }
     }

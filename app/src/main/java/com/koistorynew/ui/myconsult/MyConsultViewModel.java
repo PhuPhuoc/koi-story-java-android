@@ -57,6 +57,7 @@ public class MyConsultViewModel extends ViewModel {
         error.setValue(null);
         String userId = UserSessionManager.getInstance().getFbUid();
         apiService.getMyConsultPosts(userId, new ApiService.DataMyMarketCallback<List<MyConsult>>() {
+
             @Override
             public void onSuccess(List<MyConsult> data) {
                 arr_post_market.setValue(data);

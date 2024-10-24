@@ -158,8 +158,6 @@ public class MarketDetailsActivity extends AppCompatActivity {
             }
             sliderAdapter.setImageUrls(imageUrls);
         }
-
-        // Setup call button
         final String phoneNumber = detail.getPhoneNumber();
         callButton.setOnClickListener(v -> {
             if (phoneNumber != null && !phoneNumber.isEmpty()) {

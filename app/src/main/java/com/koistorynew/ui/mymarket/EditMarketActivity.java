@@ -302,7 +302,6 @@ public class EditMarketActivity extends AppCompatActivity {
         request.setUserId(detail.getUserId());
         request.setPostType(detail.getPostType());
         request.setTitle(detail.getTitle());
-        request.setCreatedAt(detail.getCreatedAt());
         request.setProductName(detail.getProductName());
         request.setProductType(detail.getProductType());
         request.setPrice(detail.getPrice());

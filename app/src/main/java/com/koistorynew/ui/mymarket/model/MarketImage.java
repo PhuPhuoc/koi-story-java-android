@@ -2,19 +2,18 @@ package com.koistorynew.ui.mymarket.model;
 
 public class MarketImage {
     private String filePath;
+    private String id;
 
-    // Constructor
-    public MarketImage(String filePath) {
+    public MarketImage(String filePath, String id) {
         this.filePath = filePath;
+        this.id = id;
     }
 
-    // Getter cho filePath
     public String getFilePath() {
         return filePath;
     }
 
-    // Setter cho filePath nếu cần
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public String getId() {
+        return id;
     }
 }

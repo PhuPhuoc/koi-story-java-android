@@ -9,28 +9,52 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng câu hỏi"
+            android:textSize="48sp"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạo câu hỏi mới"
+            android:textSize="20sp"
+            android:layout_marginBottom="32dp"
+            />
+
         <EditText
             android:id="@+id/add_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Content" />
+            android:layout_height="48dp"
+            android:hint="Nội dung"
+            android:background="@drawable/rounded_input"
+            android:layout_marginBottom="12dp"
+
+            />
 
         <EditText
             android:id="@+id/add_post_type"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Post Type" />
+            android:layout_height="48dp"
+            android:hint="Loại bài đăng"
+            android:background="@drawable/rounded_input"
+            android:layout_marginBottom="12dp"/>
         <EditText
             android:id="@+id/add_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title" />
+            android:layout_height="48dp"
+            android:hint="Tiêu đề"
+            android:background="@drawable/rounded_input"
+            android:layout_marginBottom="36dp"/>
 
         <Button
             android:id="@+id/button_upload_image"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload Images" />
+            android:text="Đăng ảnh"
+            android:background="@drawable/rounded_button"/>
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -47,9 +71,12 @@
 
         <Button
             android:id="@+id/button_submit"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit" />
+            android:text="Đăng"
+            android:background="@drawable/rounded_button"
+            android:layout_marginTop="8dp"
+            />
 
     </LinearLayout>
 </ScrollView>

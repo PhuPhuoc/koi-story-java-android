@@ -20,14 +20,13 @@ public class KoiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        koiGrid = findViewById(R.id.koi_grid);
-
-        List<KoiFish> koiFishList = new ArrayList<>();
-        koiFishList.add(new KoiFish(R.drawable.asagi, "Asagi")); // Replace with your actual image resources
-        koiFishList.add(new KoiFish(R.drawable.gin_matsuba, "Gin Matsuba"));
-        // Add more KoiFish items...
-
-        KoiFishAdapter adapter = new KoiFishAdapter(this, koiFishList);
-        koiGrid.setAdapter(adapter);
+//        koiGrid = findViewById(R.id.koi_grid);
+//
+//        List<KoiFish> koiFishList = new ArrayList<>();
+//        koiFishList.add(new KoiFish(R.drawable.asagi, "Asagi")); // Replace with your actual image resources
+//        koiFishList.add(new KoiFish(R.drawable.gin_matsuba, "Gin Matsuba"));
+//
+//        KoiFishAdapter adapter = new KoiFishAdapter(this, koiFishList);
+//        koiGrid.setAdapter(adapter);
     }
 }

@@ -49,7 +49,8 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.BlogViewHo
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get()
                     .load(imageUrl)
-                    .resize(0, 500)
+                    .fit()
+                    .centerCrop()
                     .into(holder.imageView);
         } else {
             holder.imageView.setImageResource(R.drawable.ic_no_image);

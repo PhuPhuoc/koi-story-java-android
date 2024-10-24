@@ -5,14 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="18dp"
     android:padding="18dp"
-    app:cardCornerRadius="12dp"
-    >
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        >
+        android:padding="16dp">
 
         <LinearLayout
             android:id="@+id/container"
@@ -29,8 +28,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_user"
                 android:scaleType="centerCrop"
+                android:src="@drawable/ic_user"
 
                 />
 
@@ -49,8 +48,8 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="Tên người đăng"
-                    android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
 
                 <!-- Ngày đăng -->
                 <TextView
@@ -59,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ngày đăng"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="14dp"/>
+                    android:textSize="14dp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -67,14 +66,14 @@
             android:id="@+id/consultTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
             android:paddingTop="8dp"
             android:text="Title"
-            android:textStyle="bold"
             android:textSize="24dp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/container"
-            android:layout_marginVertical="4dp"/>
+            app:layout_constraintTop_toBottomOf="@id/container" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -83,8 +82,7 @@
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/consultTitle"
-            />
+            app:layout_constraintTop_toBottomOf="@id/consultTitle" />
 
         <!-- Mô tả sản phẩm -->
         <TextView
@@ -93,10 +91,10 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:text="Mô tả"
+            android:textSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView"
-            android:textSize="16dp"/>
+            app:layout_constraintTop_toBottomOf="@id/imageView" />
 
         <!-- Nút Xem Bình Luận -->
         <Button
@@ -104,8 +102,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Xem bình luận"
             android:background="@drawable/rounded_button"
+            android:text="Xem bình luận"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#6200EE" /> <!-- Background color for the button -->
+    <solid android:color="#004D40" /> <!-- Background color for the button -->
     <corners android:radius="99dp" /> <!-- Corner radius for rounded effect -->
     <padding
+        android:bottom="8dp"
         android:left="16dp"
-        android:top="8dp"
         android:right="16dp"
-        android:bottom="8dp" />
+        android:top="8dp" />
 </shape>

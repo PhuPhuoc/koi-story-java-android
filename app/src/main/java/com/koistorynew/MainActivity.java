@@ -37,11 +37,20 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
         // gán toolbar từ layout cho actionbar của activity
         setSupportActionBar(binding.appBarMain.toolbar);
 
         DrawerLayout drawer = binding.drawerLayout; // lấy thanh menu
-        NavigationView navigationView = binding.navView; // lấy điều hướng của menu
+        NavigationView navigationView = binding.navView;
+        // lấy điều hướng của menu
+        String fbUid = UserSessionManager.getInstance().getFbUid();
+        if (fbUid == null || fbUid.isEmpty()) {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.findItem(R.id.nav_mymarket).setVisible(false);
+            navMenu.findItem(R.id.nav_myconsult).setVisible(false);
+        }
+
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -57,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
         // kết nối thanh điều hướng với nav controller , giúp điều hướng giữa các fragment thông qua các mục menu
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int destinationId = destination.getId();
+            if ((destinationId == R.id.nav_mymarket || destinationId == R.id.nav_myconsult) &&
+                    (fbUid == null || fbUid.isEmpty())) {
+                // Redirect to home if user tries to access restricted areas
+                controller.navigate(R.id.nav_home);
+                Toast.makeText(this, "Vui lòng đăng nhập để sử dụng tính năng này", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         View headerView = navigationView.getHeaderView(0); // Lấy view header đầu tiên
         TextView userName = headerView.findViewById(R.id.userName);
@@ -83,12 +101,20 @@ public class MainActivity extends AppCompatActivity {
             // Nếu không có avatar, đặt ảnh mặc định
             avatar.setImageResource(R.mipmap.ic_launcher_round);
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) { // nạp các mục menu lên thanh action bar, thường dùn để thêm các mục như cài đặt
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem settingsItem = menu.findItem(R.id.action_settings);
+        String fbUid = UserSessionManager.getInstance().getFbUid();
+        if (fbUid == null || fbUid.isEmpty()) {
+            settingsItem.setTitle("Đăng nhập");
+        } else {
+            settingsItem.setTitle("Đăng xuất");
+        }
         return true;
     }
 
@@ -96,31 +122,40 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            // Tạo AlertDialog để xác nhận đăng xuất
-            new AlertDialog.Builder(this)
-                    .setTitle("Xác nhận")
-                    .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                            progressDialog.setTitle("Đang đăng xuất...");
-                            progressDialog.show();
+        String fbUid = UserSessionManager.getInstance().getFbUid();
+        if (fbUid == null || fbUid.isEmpty()) {
+            if (id == R.id.action_settings) {
+                // Chuyển sang LoginActivity khi chưa đăng nhập
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        } else {
+            if (id == R.id.action_settings) {
+                // Tạo AlertDialog để xác nhận đăng xuất
+                new AlertDialog.Builder(this)
+                        .setTitle("Xác nhận")
+                        .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                                progressDialog.setTitle("Đang đăng xuất...");
+                                progressDialog.show();
 
-                            UserSessionManager.getInstance().clearUserData();
+                                UserSessionManager.getInstance().clearUserData();
 
-                            progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(MainActivity.this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-
-            return true;
+                                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);

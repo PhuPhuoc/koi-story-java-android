@@ -119,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
             int finalI = i;
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                    String imageUrl = "\"" + downloadUri.toString() + "\""; // Wrap the URL in quotes
+                    String imageUrl = downloadUri.toString();
                     imageUrls.add(imageUrl);
                     uploadCount[0]++;
 

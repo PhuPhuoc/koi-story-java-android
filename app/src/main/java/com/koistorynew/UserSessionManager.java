@@ -6,7 +6,6 @@ public class UserSessionManager {
     private String email;
     private String displayName;
     private String profilePictureUrl;
-
     private UserSessionManager() {
         // Private constructor để ngăn khởi tạo trực tiếp
     }

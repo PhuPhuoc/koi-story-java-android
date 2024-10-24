@@ -12,7 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.koistorynew.LoginActivity;
 import com.koistorynew.R;
+import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.consult.ConsultCommentActivity;
 import com.koistorynew.ui.consult.model.Consult;
 import com.squareup.picasso.Picasso;
@@ -57,12 +59,20 @@ public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultV
         } else {
             holder.imageView.setImageResource(R.drawable.ic_no_image);
         }
+        String fbUid = UserSessionManager.getInstance().getFbUid();
+        if (fbUid != null) {
+            holder.commentButton.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);
+                intent.putExtra("POST_ID", consult.getId()); // Assuming you want to pass consult ID
+                view.getContext().startActivity(intent);
+            });
+        } else {
+            holder.commentButton.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), LoginActivity.class);
+                view.getContext().startActivity(intent);
+            });
+        }
 
-        holder.commentButton.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);
-            intent.putExtra("POST_ID", consult.getId()); // Assuming you want to pass consult ID
-            view.getContext().startActivity(intent);
-        });
     }
 
     @Override

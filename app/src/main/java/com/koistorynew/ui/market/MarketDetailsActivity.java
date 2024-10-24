@@ -18,8 +18,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.koistorynew.LoginActivity;
 import com.koistorynew.R;
 import com.koistorynew.ApiService;
+import com.koistorynew.UserSessionManager;
 import com.koistorynew.ui.consult.ConsultCommentActivity;
 import com.koistorynew.ui.market.adapter.ImageSliderAdapter;
 import com.koistorynew.ui.market.model.PostMarketDetail;
@@ -72,12 +74,22 @@ public class MarketDetailsActivity extends AppCompatActivity {
 
         // Fetch market post detail
         fetchMarketPostDetail(postID);
+        String fbUid = UserSessionManager.getInstance().getFbUid();
         Button seeMoreButton = findViewById(R.id.seeMoreButton);
-        seeMoreButton.setOnClickListener(v -> {
-            Intent commentIntent = new Intent(MarketDetailsActivity.this, MarketCommentActivity.class);
-            commentIntent.putExtra("POST_ID", postID); // truyền ID sản phẩm
-            startActivity(commentIntent);
-        });
+        if (fbUid != null) {
+            seeMoreButton.setOnClickListener(v -> {
+                Intent commentIntent = new Intent(MarketDetailsActivity.this, MarketCommentActivity.class);
+                commentIntent.putExtra("POST_ID", postID); // truyền ID sản phẩm
+                startActivity(commentIntent);
+            });
+        } else {
+            seeMoreButton.setOnClickListener(v -> {
+                Intent commentIntent = new Intent(MarketDetailsActivity.this, LoginActivity.class);
+                startActivity(commentIntent);
+            });
+        }
+
+
     }
 
     private void initializeViews() {

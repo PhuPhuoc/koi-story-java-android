@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -141,8 +142,8 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void registerUser(String email, String password, String userName, String confirmPassword, List face_image) {
-//        String url = "http://api.koistory.site/api/v1/users/register";
-        String url = "http://10.0.2.2:8080/api/v1/users/register";
+        String url = "http://api.koistory.site/api/v1/users/register";
+//        String url = "http://10.0.2.2:8080/api/v1/users/register";
 
         Log.d("RegisterData", "email: " + email + ", password: " + password +
                 ", userName: " + userName + ", confirmPassword: " + confirmPassword +
@@ -203,6 +204,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                             }
                         } else {
+                            Toast.makeText(RegisterActivity.this, "Registration Failed" + error, Toast.LENGTH_SHORT).show();
+                            Log.e("error", "onErrorResponse: " + error);
                             progressDialog.dismiss();
                             Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                         }

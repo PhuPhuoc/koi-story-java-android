@@ -17,7 +17,6 @@ import com.koistorynew.ui.myconsult.EditConsultActivity;
 import com.koistorynew.ui.myconsult.EditImagesConsultActivity;
 import com.koistorynew.ui.myconsult.MyConsultCommentActivity;
 import com.koistorynew.ui.myconsult.model.MyConsult;
-import com.koistorynew.ui.mymarket.EditImagesActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -55,7 +54,10 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
         holder.title.setText(consult.getTitle());
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            Picasso.get().load(imageUrl).into(holder.imageView);
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(300, 300)
+                    .into(holder.imageView);
         } else {
             holder.imageView.setImageResource(R.drawable.ic_no_image);
         }
@@ -84,7 +86,7 @@ public class MyConsultAdapter extends RecyclerView.Adapter<MyConsultAdapter.Cons
             Intent intent = new Intent(context, EditImagesConsultActivity.class);
             intent.putExtra("ID", consult.getId());
             intent.putExtra("IMAGE", consult.getFile_path());
-            intent.putExtra("IMAGE_ID",consult.getImage_id());
+            intent.putExtra("IMAGE_ID", consult.getImage_id());
             context.startActivity(intent);
         });
     }

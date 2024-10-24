@@ -55,8 +55,10 @@ public class MyMarketAdapter extends RecyclerView.Adapter<MyMarketAdapter.BlogVi
 
         // Kiểm tra nếu URL không hợp lệ hoặc rỗng
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            // Tải hình ảnh bằng Picasso nếu URL hợp lệ
-            Picasso.get().load(imageUrl).into(holder.imageView);
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(300, 300)
+                    .into(holder.imageView);
         } else {
             // Nếu URL trống hoặc null, bạn có thể đặt một hình ảnh mặc định
             holder.imageView.setImageResource(R.drawable.ic_no_image);

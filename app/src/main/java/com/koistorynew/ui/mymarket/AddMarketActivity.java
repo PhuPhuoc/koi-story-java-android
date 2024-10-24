@@ -51,7 +51,8 @@ public class AddMarketActivity extends AppCompatActivity {
     private EditText editTextName, editTextPostType, editTextColor, editTextOld, editTextAddress,
             editTextSize, editTextTitle, editTextProductType, editTextType, editTextPhone,
             editTextPrice, editTextDescription;
-    private Button uploadImageButton, submitButton;
+    private Button  submitButton;
+    private ImageButton uploadImageButton;
     private LinearLayout imageContainer; // Container for selected images
     private List<Uri> selectedImages;  // List of selected images
     private MyMarketViewModel myMarketViewModel;
@@ -92,7 +93,6 @@ public class AddMarketActivity extends AppCompatActivity {
         editTextProductType = findViewById(R.id.edit_text_product_type);
         editTextAddress = findViewById(R.id.edit_text_address);
         editTextSize = findViewById(R.id.edit_text_size);
-        editTextTitle = findViewById(R.id.edit_text_title);
         editTextType = findViewById(R.id.edit_text_type);
         uploadImageButton = findViewById(R.id.button_upload_image);
         submitButton = findViewById(R.id.button_submit);

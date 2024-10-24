@@ -47,7 +47,16 @@ public class ConsultAdapter extends RecyclerView.Adapter<ConsultAdapter.ConsultV
         holder.title.setText(consult.getTitle());
         Picasso.get().load(consult.getUser_avatar()).into(holder.avatar);
         holder.descriptionTextView.setText(consult.getContent());
-        Picasso.get().load(consult.getFile_path()).into(holder.imageView);
+        String imageUrl = consult.getFile_path();
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .resize(300, 300)
+                    .into(holder.imageView);
+        } else {
+            holder.imageView.setImageResource(R.drawable.ic_no_image);
+        }
 
         holder.commentButton.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ConsultCommentActivity.class);
